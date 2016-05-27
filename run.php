@@ -92,12 +92,12 @@ $bot->readConfig();
 if (isset($options['i']) || isset($options['input']))
 {
     $bot->Console->notice("Input forced on!");
-	$bot->input = true;
+    $bot->input = true;
 }
 if (isset($options['I']) || isset($options['no-input']))
 {
     $bot->Console->notice("Input forced off!");
-	$bot->input = false;
+    $bot->input = false;
 }
 if (isset($options['l']) || isset($options['logging']))
 {
@@ -153,58 +153,58 @@ $bot->Modules->load('./modules/');
 if (!$bot->pk)
 {
     $bot->savePk = true;
-	$array = $bot->dAmn->getAuthtoken($bot->username, $bot->password);
-	if (isset($array['token']) && isset($array['cookie']))
-	{
-		$bot->pk = $array['token'];
+    $array = $bot->dAmn->getAuthtoken($bot->username, $bot->password);
+    if (isset($array['token']) && isset($array['cookie']))
+    {
+        $bot->pk = $array['token'];
         $bot->cookie = $array['cookie'];
         $bot->saveConfig();
-	}
+    }
 }
 else
     $bot->Console->notice("Attemping to use saved authtoken...");
 
 if (!$bot->pk)
 {
-	$bot->Console->warn("Failed to retrieve authtoken. Check your username and password to make sure your login is correct.");
-	$bot->quit = true;
+    $bot->Console->warn("Failed to retrieve authtoken. Check your username and password to make sure your login is correct.");
+    $bot->quit = true;
 }
 
 function handleLogin(&$bot, $error, $skip_retry=false, $retries=1)
 {
     $retry_error = 0;
-	switch ($error)
-	{
-		case 1:
+    switch ($error)
+    {
+        case 1:
             $bot->Console->notice("Logged in to dAmn successfully!");
-			foreach($bot->join as $j)
-			{
-				$bot->dAmn->join($j);
-				$bot->dAmn->packetLoop();
-			}
-			if ($bot->savePk)
+            foreach($bot->join as $j)
+            {
+                $bot->dAmn->join($j);
+                $bot->dAmn->packetLoop();
+            }
+            if ($bot->savePk)
             {
                 $bot->Console->notice("Saving new authtoken...");
-				$bot->saveConfig();
+                $bot->saveConfig();
             }
-		break;
-		case 2:
-			$bot->Console->warn(($skip_retry ? "Failed to log in with old authtoken." : "Failed to log in with old authtoken, retrieving new authtoken...") . NORM, null);
-			if (!$skip_retry)
-			{
-				$array = $bot->dAmn->getAuthtoken($bot->username, $bot->password);
-				if (isset($array['token']) && isset($array['cookie']))
-				{
-					$bot->pk = $array['token'];
+        break;
+        case 2:
+            $bot->Console->warn(($skip_retry ? "Failed to log in with old authtoken." : "Failed to log in with old authtoken, retrieving new authtoken...") . NORM, null);
+            if (!$skip_retry)
+            {
+                $array = $bot->dAmn->getAuthtoken($bot->username, $bot->password);
+                if (isset($array['token']) && isset($array['cookie']))
+                {
+                    $bot->pk = $array['token'];
                     $bot->cookie = $array['cookie'];
                     $bot->savePk = true;
-				}
-				$retry_error = $bot->dAmn->login($bot->username, $bot->pk);
-			}
-		break;
-		case 3:
-			$bot->Console->warn("Uh oh, looks like you're banned from dAmn!");
-		break;
+                }
+                $retry_error = $bot->dAmn->login($bot->username, $bot->pk);
+            }
+        break;
+        case 3:
+            $bot->Console->warn("Uh oh, looks like you're banned from dAmn!");
+        break;
         case 4:
             if ($retries > 50)
             {
@@ -217,24 +217,24 @@ function handleLogin(&$bot, $error, $skip_retry=false, $retries=1)
             echo "Sleeping for $wait seconds...\n";
             sleep($wait);
             $retry_error = $bot->dAmn->login($bot->username, $bot->pk);
-			handleLogin($bot, $retry_error, false, ++$retries);
-		break;
-		default:
-			$bot->Console->warn("I'm not sure what's going on here!");
-			exit();
-		break;
-	}
-	
-	if ($retry_error != 1 && !$skip_retry)
-	{
-		handleLogin($bot, $retry_error, true);
-		$bot->saveConfig();
-	}
+            handleLogin($bot, $retry_error, false, ++$retries);
+        break;
+        default:
+            $bot->Console->warn("I'm not sure what's going on here!");
+            exit();
+        break;
+    }
+    
+    if ($retry_error != 1 && !$skip_retry)
+    {
+        handleLogin($bot, $retry_error, true);
+        $bot->saveConfig();
+    }
 }
 
 function run(&$bot)
 {
-	if (!$bot->quit)
+    if (!$bot->quit)
     {
         $success = false;
         if (!$bot->OAuth->accessToken)
@@ -273,21 +273,21 @@ function run(&$bot)
         }
         //$agent = "Mozilla/5.0 (X11; Linux i686; rv:38.0) Gecko/20100101 Firefox/38.0";
         $agent = null;
-		$error = $bot->dAmn->login($bot->username, $bot->pk, $agent);
-		handleLogin($bot, $error);
-	}
+        $error = $bot->dAmn->login($bot->username, $bot->pk, $agent);
+        handleLogin($bot, $error);
+    }
     stream_set_blocking($bot->dAmn->s, false);
 
     if ($bot->input === null)
         $bot->input = $bot->start_input;
     
     while (!$bot->quit)
-	{
-		usleep(5000);
-		if (!$bot->input)
-		{
-			$bot->dAmn->packetLoop();
-			if ($bot->disconnected)
+    {
+        usleep(5000);
+        if (!$bot->input)
+        {
+            $bot->dAmn->packetLoop();
+            if ($bot->disconnected)
             {
 
                 if (!$bot->quit)
@@ -296,42 +296,42 @@ function run(&$bot)
                     $fp = fopen('./core/status/restart.bot', 'w');
                     fclose($fp);
                 }
-				$bot->Console->warn("The bot has disconnected from the server.");
+                $bot->Console->warn("The bot has disconnected from the server.");
                 $bot->disconnected = false;
                 $bot->quit = true;
-			}
-		}
-		else
-		{
+            }
+        }
+        else
+        {
             $bot->Console->notice("Input is now on.");
             // I run dAmn::packetLoop() in dAmn::input()
-			$bot->dAmn->input();
+            $bot->dAmn->input();
             $bot->Console->notice("Input is now off.");
             $bot->input = false;
-		}
+        }
         $bot->Event->loop(); // events hooked to 'loop'
     }
     if ($bot->quit || $bot->restart)
         $bot->input = false;
-	$bot->Console->notice("Shutting down...");
+    $bot->Console->notice("Shutting down...");
 }
 
 // The following are for debugging purposes
 function fakeRun(&$bot)
 {
     echo "Enter packets to be interpreted. \\n becomes newline.";
-	for(;;) $bot->dAmn->process(trim(str_replace("\\n", "\n", $bot->Console->get(">", true))));
+    for(;;) $bot->dAmn->process(trim(str_replace("\\n", "\n", $bot->Console->get(">", true))));
 }
 
 // if I need this more I should spruce it up a bit using the !e command's code
 function evalLoop(&$bot)
 {
     echo "Enter code to be evaluated:";
-	for(;;)
-	{
-		$code = eval(trim($bot->Console->get("> ")));
-		if ($code) print_r($code);
-	}
+    for(;;)
+    {
+        $code = eval(trim($bot->Console->get("> ")));
+        if ($code) print_r($code);
+    }
 }
 
 run($bot);

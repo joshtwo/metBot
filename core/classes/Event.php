@@ -12,10 +12,10 @@ class Event
     private $ns;
     private $from;
     private $args;
-	
-	function __construct($bot)
-	{
-		$this->bot = $bot;
+    
+    function __construct($bot)
+    {
+        $this->bot = $bot;
     }
 
     // set the packet we're using as the current event to process
@@ -46,7 +46,7 @@ class Event
     // $this->hook('e_whois', 'get/e=bad namespace, property/p=info');
     //
     // Returns bool stating if the given event matches the current dAmn packet.
-	function received($type)
+    function received($type)
     {
         $type = explode('_', $type);
         $match = true;
@@ -78,7 +78,7 @@ class Event
     function unhook($func, $event, $priority=10)
     {
         if (isset($this->evts[$event]) && isset($this->evts[$event][$priority]))
-		{	
+        {    
             if (($key = array_search($func, $this->evts[$event][$priority])) !== false)
             {
                 unset($this->evts[$event][$priority][$key]);
@@ -159,11 +159,11 @@ class Event
             }
         }
     }
-	
-	function process()
-	{
-		if ($this->evts != null)
-			foreach(array_keys($this->evts) as $name)
+    
+    function process()
+    {
+        if ($this->evts != null)
+            foreach(array_keys($this->evts) as $name)
                 if ($this->received($name) && $this->from != $this->bot->username)
                     $this->trigger($name);
     }

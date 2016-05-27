@@ -20,13 +20,13 @@ class EventData
 
     // constructor is for setting the most common attributes, but all of them
     // are optional
-	function __construct($ns, $from, $pkt, $args)
-	{
-		$this->ns = $ns;
-		$this->args = $args;
+    function __construct($ns, $from, $pkt, $args)
+    {
+        $this->ns = $ns;
+        $this->args = $args;
         $this->from = $from;
-		$this->pkt = $pkt;
-	}
+        $this->pkt = $pkt;
+    }
 
     // you can "quote arguments" when you run commands, and this gives you a
     // string where text within quotes have the separator character within

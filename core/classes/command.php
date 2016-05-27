@@ -1,11 +1,11 @@
 <?php
 class command
 {
-	public $method;
-	public $privs;
-	public $help;
-	private $switch = true;
-	public $alias = false;
+    public $method;
+    public $privs;
+    public $help;
+    private $switch = true;
+    public $alias = false;
 
     function isOn() { return $this->switch; }
 
@@ -21,10 +21,10 @@ class command
             $this->switch = !$switch;
     }
 
-	function __construct($privs, $help)
-	{
-		$this->privs = $privs;
-		$this->help = $help;
-	}
+    function __construct($privs, $help)
+    {
+        $this->privs = $privs;
+        $this->help = $help;
+    }
 }
 ?>
