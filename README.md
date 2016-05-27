@@ -13,13 +13,7 @@ If this is your first time running metBot, it'll automatically start configuring
 * Bot username - the username of your bot's dA account
 * Bot password - the password of your bot's dA account
 * Bot administrator - the name of YOUR dA account
-* Bot trigger - this is a character or string of characters that starts every command you send to the bot in the chatroom. For example, if the trigger is ! then you command the bot like this:
-
-    5:10:05 pm <n00blord666> !about
-    5:10:05 pm <myKoolChatBot> Hello! I'm running metBot 0.7 (repo). My owner is n00blord666. I've been up for 9 hours 38 minutes 22 seconds.
-    5:10:12 pm <n00blord666> !say Hello.
-    5:10:13 pm <myKoolChatBot> Hello.
-
+* Bot trigger - this is a character or string of characters that starts every command you send to the bot in the chatroom. For example, if the trigger is ! then you command the bot like this: `5:10:05 pm <n00blord666> !about`
 * Channels to join - a space separated list of channels to join. ex: #Botdom #Fun4Fun #MyPrivateChat
 * Channel logging - Typically you want this. If you say yes, chat logs will be recorded in the format of `data/logs/<month>-<day>-<year>/<chatroom name>` inside of the bot's folder.
 * Warn users - If a user doesn't have the privileges to use a command, this will tell them if you choose yes, or ignore them quietly if you choose no.
@@ -89,6 +83,6 @@ As mentioned above, you'll want to look at existing modules in the `modules/` fo
 
 If you want to create a module, you'll need to add a .php file with your module's code to `module/`, and make a class that extends from `module`. Make sure your file name and class name are the same or your bot will crash on startup. You set up your commands and events in the `main()` method, and all command hook/event hooks take two arguments: an instance of the core class, `bot`, typically named `$bot`; and the info for this current event, an `EventData` object, typically named `$cmd` for command hooks or `$evt` for event hooks.
 
-Events execute in order of priority (higher numered priority first), and then in the order they're hooked: you can set a priority for your events when hooking them with module::hookEvent() (see `module.php`). You can trigger an event using `Event::trigger()` accessed through `$bot->Event->trigger()`. Returning anything from an event will immediately end the event execution chain, and that value will be the return value of `Event::trigger()`. Please see `Event.pphp`.
+Events execute in order of priority (higher numered priority first), and then in the order they're hooked: you can set a priority for your events when hooking them with module::hookEvent() (see `module.php`). You can trigger an event using `Event::trigger()` accessed through `$bot->Event->trigger()`. Returning anything from an event will immediately end the event execution chain, and that value will be the return value of `Event::trigger()`. Please see `Event.php`.
 
 A more complete guide and a detailed example module will be available in upcoming releases. Trust the comments and the existing modules, even after the guide is here!
