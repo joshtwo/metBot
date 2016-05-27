@@ -13,7 +13,14 @@ If this is your first time running metBot, it'll automatically start configuring
 * Bot username - the username of your bot's dA account
 * Bot password - the password of your bot's dA account
 * Bot administrator - the name of YOUR dA account
-* Bot trigger - this is a character or string of characters that starts every command you send to the bot in the chatroom. For example, if the trigger is ! then you command the bot like this: `5:10:05 pm <n00blord666> !about`
+* Bot trigger - this is a character or string of characters that starts every command you send to the bot in the chatroom. For example, if the trigger is ! then you command the bot like this:
+```
+5:10:05 pm <n00blord666> !about
+5:10:05 pm <myKoolChatBot> Hello! I'm running metBot 0.7 (repo). My owner is
+  n00blord666. I've been up for 9 hours 38 minutes 22 seconds.
+5:10:12 pm <n00blord666> !say Hello.
+5:10:13 pm <myKoolChatBot> Hello.
+```
 * Channels to join - a space separated list of channels to join. ex: #Botdom #Fun4Fun #MyPrivateChat
 * Channel logging - Typically you want this. If you say yes, chat logs will be recorded in the format of `data/logs/<month>-<day>-<year>/<chatroom name>` inside of the bot's folder.
 * Warn users - If a user doesn't have the privileges to use a command, this will tell them if you choose yes, or ignore them quietly if you choose no.
@@ -33,49 +40,49 @@ You may not care about this stuff unless you're a little more ambitious.
 
 ## Console input
 If you're using a Unix-based OS or a terminal on Windows that doesn't suck (i.e. not Command Prompt) then you should be able to optionally use the bot's console input. Anything you type that isn't a bot or console command will show up as a message. Here's an example session:
-
-    [4:22:36 am][#ThumbHub] ** Adananian has joined
-    [4:22:36 am][#ThumbHub] <ThumbHubBot> Welcome back, Adananian! :thumb27637318:
-    [4:22:48 am][#ThumbHub] <Adananian> Hey guys. Wassup?
-    #ThumbHub ~> Hi there, Adanian
-    [4:23:39 am] ** Sending message...
-    [4:23:39 am][#ThumbHub] <lambdabot> Hi there, Adanian
-    [4:24:45 am][#ThumbHub] <Adananian> lambdabot: Hi. How are you?
-    #ThumbHub ~> 
-
+```
+[4:22:36 pm][#ThumbHub] ** Adananian has joined
+[4:22:36 pm][#ThumbHub] <ThumbHubBot> Welcome back, Adananian! :thumb27637318:
+[4:22:48 pm][#ThumbHub] <Adananian> Hey guys. Wassup?
+#ThumbHub ~> Hi there, Adanian
+[4:23:39 pm] ** Sending message...
+[4:23:39 pm][#ThumbHub] <lambdabot> Hi there, Adanian
+[4:24:45 pm][#ThumbHub] <Adananian> lambdabot: Hi. How are you?
+#ThumbHub ~> 
+```
 
 ### Bot commands
 Type any command the way you'd type a command in the channel. Example:
-
-    #SecretLab ~> !r 1 + 1;
-    [4:29:56 am] ** Running command "r 1 + 1;"...
-    [4:29:56 am] Evaluating code...
-    [4:29:56 am][#SecretLab] <lambdabot> Return value: <bcode>2</bcode>
-    #SecretLab ~>
-
+```
+#SecretLab ~> !r 1 + 1;
+[4:29:56 pm] ** Running command "r 1 + 1;"...
+[4:29:56 pm] Evaluating code...
+[4:29:56 pm][#SecretLab] <lambdabot> Return value: <bcode>2</bcode>
+#SecretLab ~>
+```
 ### Console commands
 There's a set of commands you can use in the console which start with / and which are essential to using input mode. Current ones are:
 * /set <channel> - Set the channel the bot talks/operates in to a different one. Super important! Ex: /set #MyFavoriteChannel
 * /topic, /title, /members - Show the topic or title or list of members of the current chatroom.
 * /multi - Start a multiline message. Type /end to end the mutliline message and send it. Example:
-
-    #Fun4Fun ~> /multi
-    > This is an example
-    > of a multiline message
-    > It sends once I type /end
-    > /end
-    [4:38:25 am][#Fun4Fun] <lambdabot> This is an example
-    of a multiline message
-    It sends once I type /end
-    #Fun4Fun ~> 
-
+```
+#Fun4Fun ~> /multi
+> This is an example
+> of a multiline message
+> It sends once I type /end
+> /end
+[4:38:25 pm][#Fun4Fun] <lambdabot> This is an example
+of a multiline message
+It sends once I type /end
+#Fun4Fun ~> 
+```
 * /me <message> - perform an action in the chatroom. Example:
-
-    #Fun4Fun ~> /me does something awesome
-    [4:39:14 am] Sending message...
-    [4:39:14 am][#Fun4Fun] * lambdabot does something awesome
-    #Fun4Fun ~>
-
+```
+#Fun4Fun ~> /me does something awesome
+[4:39:14 pm] Sending message...
+[4:39:14 pm][#Fun4Fun] * lambdabot does something awesome
+#Fun4Fun ~>
+```
 * /quit - Quits input mode. You'll probably appreciate this the most if you get curious because you use Windows and I told you not to do input mode. ;)
 
 ## Extending the bot
