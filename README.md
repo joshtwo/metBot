@@ -14,10 +14,12 @@ If this is your first time running metBot, it'll automatically start configuring
 * Bot password - the password of your bot's dA account
 * Bot administrator - the name of YOUR dA account
 * Bot trigger - this is a character or string of characters that starts every command you send to the bot in the chatroom. For example, if the trigger is ! then you command the bot like this:
+
     <n00blord666> !about
     <myKoolChatBot> Hello! I'm running metBot 0.7 (repo). My owner is n00blord666. I've been up for 9 hours 38 minutes 22 seconds.
     <n00blord666> !say Hello.
     <myKoolChatBot> Hello.
+
 * Channels to join - a space separated list of channels to join. ex: #Botdom #Fun4Fun #MyPrivateChat
 * Channel logging - Typically you want this. If you say yes, chat logs will be recorded in the format of `data/logs/<month>-<day>-<year>/<chatroom name>` inside of the bot's folder.
 * Warn users - If a user doesn't have the privileges to use a command, this will tell them if you choose yes, or ignore them quietly if you choose no.
