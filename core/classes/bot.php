@@ -237,6 +237,8 @@ class bot
         $this->admin = $this->Console->get("Bot administrator (this should be your dA username): ");
         $this->trigger = new Trigger($this->Console->get("Bot trigger: "));
         $this->join = explode(' ', $this->Console->get("Channels to join (seperate with spaces): "));
+        for ($i = 0; $i < count($this->join); ++$i)
+            $this->join[$i] = $this->dAmn->format($this->join[$i]);
         //$this->timestamp = $this->Console->get("Timestamp (leave empty for the default or if you don't understand): ", true);
         //if ($this->timestamp == false)
         $this->timestamp = "g:i:s a";
