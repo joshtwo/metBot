@@ -14,6 +14,7 @@ class bot
     public $savePk = false;
     public $disabledRooms = array();
     public $noGuests = false;
+    public $levels;
     // cmd-line options to let us know which NOT to save
     // currently does nothing
     public $options;
