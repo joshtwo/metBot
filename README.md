@@ -5,7 +5,7 @@ This is a chatroom bot for [dAmn (deviantART Messaging Network)](http://chat.dev
 If you aren't familiar with metBot, or with dAmn bots in general, you'll want to read this section before using the bot.
 
 ## Installation
-First, you need to have PHP installed in order to use this bot. If you haven't done this already and are unsure how to, please [consult the Botdom wiki](http://botdom.com/wiki/Install_PHP). If you have PHP installed, download the bot either by cloning it using `git` or [downloading and extracting the .zip](https://github.com/joshtwo/arsenic/archive/master.zip) to a convenient place.
+First, you need to have PHP installed in order to use this bot. If you haven't done this already and are unsure how to, please [consult the Botdom wiki](http://botdom.com/documentation/Install_PHP). If you have PHP installed, download the bot either by cloning it using `git` or [downloading and extracting the .zip](https://github.com/joshtwo/arsenic/archive/master.zip) to a convenient place.
 
 The bot is started by executing `run.php`, but controllers `run.bat` and `run.sh` (the former for Windows and the latter for Unix-based shells) allow your bot to restart (through chat commands) and retry after failure automatically. If you're a Windows user and are unsure of what to do, just double click "run.bat" to run metBot.
 
