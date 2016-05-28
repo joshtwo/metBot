@@ -76,12 +76,21 @@ if (file_exists('./core/status/restart.bot'))
 if (file_exists('./core/status/close.bot'))
     unlink('./core/status/close.bot');
 
-if (!file_exists('./data/config/login.ini') || isset($options['c']) || isset($options['config']))
+if (($noConfigFile = !file_exists('./data/config/login.ini'))
+    || isset($options['c'])
+    || isset($options['config']))
 {
-    $bot->config($user = _or(@$options['config'], @$options['c']));
-    $answer = $bot->Console->get("You manually chose to configure $user. Do you want to connect as $user too? [y/n]");
-    if ($answer == "y" || $answer == "Y")
-        $bot->configFile = $user;
+    if (!$noConfigFile)
+        $bot->config($user = _or(@$options['config'], @$options['c']));
+    else
+        $bot->config();
+
+    if (!$noConfigFile)
+    {
+        $answer = $bot->Console->get("You manually chose to configure $user. Do you want to connect as $user too? [y/n]");
+        if ($answer == "y" || $answer == "Y")
+            $bot->configFile = $user;
+    }
 }
 
 if (isset($options['u']) || isset($options['user']))

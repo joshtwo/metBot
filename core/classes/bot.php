@@ -35,7 +35,7 @@ class bot
         if ($configFile == null) $configFile = $this->configFile;
         $login = @file_get_contents("./data/config/$configFile.ini");
         if (!$login)
-            die("The config file $configFile does not exist.\n");
+            die("The config file \"$configFile\" does not exist.\n");
         eval($login);
         eval($user = @file_get_contents('./data/config/users.ini'));
         $this->username = $username;
@@ -103,6 +103,10 @@ class bot
         $contents .= '$disabledRooms = '.($this->disabledRooms == null ? 'array()' : var_export($this->disabledRooms, true)) .';';
         $contents .= "\n\$noGuests = " . ($this->noGuests ? "true" : "false") .';';
         $contents .= "\n\$oauth = " . var_export(array('access_token' => $this->OAuth->accessToken, 'refresh_token' => $this->OAuth->refreshToken), true) . ";\n";
+        if (!is_dir('./data'))
+            mkdir('./data');
+        if (!is_dir('./data/config'))
+            mkdir('./data/config');
         $fp = fopen($dir.'./data/config/'.$file.'.ini', 'w');
         fwrite($fp, $contents);
         fclose($fp);
@@ -213,8 +217,6 @@ class bot
             // try to find it, because for some reason getopts() doesn't like
             // when someone does -c user instead of -cuser
             global $argc, $argv;
-            echo "Argc: $argc; Args:\n";
-            print_r($argv);
             $file = '';
             for ($i = 0; $i < $argc - 1; ++$i)
             {
