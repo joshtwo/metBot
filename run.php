@@ -181,7 +181,7 @@ if (!$bot->pk)
 
 function handleLogin(&$bot, $error, $skip_retry=false, $retries=1)
 {
-    $retry_error = 0;
+    $retry_error = 1;
     switch ($error)
     {
         case 1:
@@ -229,7 +229,7 @@ function handleLogin(&$bot, $error, $skip_retry=false, $retries=1)
             handleLogin($bot, $retry_error, false, ++$retries);
         break;
         default:
-            $bot->Console->warn("I'm not sure what's going on here!");
+            $bot->Console->warn("I'm not sure what's going on here! Error #$retry_error");
             exit();
         break;
     }
