@@ -147,7 +147,7 @@ class OAuth
         if (!$post && $payload)
             $path .= "?$payload";
         //echo "Path: $path\nPayload: $payload\n";
-        $response = send_headers(
+        $response = $this->bot->send_headers(
             $socket,
             "www.deviantart.com",
             $path,

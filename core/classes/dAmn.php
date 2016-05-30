@@ -11,7 +11,8 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
             $headers .= "POST $url HTTP/1.1\r\n";
         else $headers .= "GET $url HTTP/1.1\r\n";
         $headers .= "Host: $host\r\n";
-        $headers .= "User-Agent: Mozilla/5.0 (X11; Linux i686; rv:38.0) Gecko/20100101 Firefox/38.0\r\n";
+        //$headers .= "User-Agent: Mozilla/5.0 (X11; Linux i686; rv:38.0) Gecko/20100101 Firefox/38.0\r\n";
+        $headers .= "User-Agent: Mozilla/5.0 (X11; Linux i686; rv:46.0) Gecko/20100101 Firefox/46.0\r\n";
         if ($referer)
         {
             if (is_string($referer))
@@ -25,8 +26,9 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
         $headers .= "Connection: close\r\n";
         if ($cookies != array())
             $headers .= "Cookie: ".cookie_string($cookies)."\r\n";
-        $headers .= "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*\/*;q=0.8\r\n";
-        $headers .= "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n";
+        $headers .= "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n";
+        //$headers .= "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n";
+        $headers .= "Accept-Language: en-US,en;q=0.5\r\n";
         if (isset($post))
         {
             $headers .= "Content-Type: application/x-www-form-urlencoded\r\n";
@@ -569,16 +571,21 @@ class dAmn
         // first get the validate_key/token values
         if (($socket = @fsockopen("ssl://www.deviantart.com", 443)) == false)
         {
-            $this->bot->Console->warn("Could not open socket to deviantart.com, using last retrieved authtoken...");
-            return array('token' => $this->bot->oldpk, 'cookie' => $this->bot->oldcookie);
+            $this->bot->Console->warn("Couldn't open socket to deviantart.com. Using last retrieved authtoken...");
+            return array('token' => $this->bot->pk, 'cookie' => $this->bot->cookie);
         }
-        $response = send_headers(
+        $response = $this->bot->send_headers(
             $socket,
             "www.deviantart.com",
             "/users/login",
             "https://www.deviantart.com/users/loggedin"
         );
         fclose($socket);
+        if (!$response)
+        {
+            $this->bot->Console->warn("Couldn't get form keys; no response from dA. Using last retrieved authtoken...");
+            return array('token' => $this->bot->pk, 'cookie' => $this->bot->cookie);
+        }
         $cookies = collect_cookies($response); 
         preg_match(
             '/name="validate_token" value="(\w+)".+?name="validate_key" value="(\w+)"/Ums',
@@ -592,8 +599,8 @@ class dAmn
         
         if (($socket = @fsockopen("ssl://www.deviantart.com", 443)) == false)
         {
-            $this->bot->Console->warn("Could not open socket to deviantart.com, using last retrieved authtoken...", "");
-            return array('token' => $this->bot->oldpk, 'cookie' => $this->bot->oldcookie);
+            $this->bot->Console->warn("Couldn't open socket to deviantart.com. Using last retrieved authtoken...");
+            return array('token' => $this->bot->pk, 'cookie' => $this->bot->cookie);
         }
         $response = send_headers(
             $socket,
@@ -604,20 +611,25 @@ class dAmn
             $cookies
         );
         fclose($socket);
+        if (!$response)
+        {
+            $this->bot->Console->warn("Couldn't perform login; no response from dA. Using last retrieved authtoken...");
+            return array('token' => $this->bot->oldpk, 'cookie' => $this->bot->oldcookie);
+        }
         if (strpos($response, "Location: http://www.deviantart.com/users/wrong-password") !== false)
         {
-            $this->bot->Console->warn("Wrong password!\n");
+            $this->bot->Console->warn("Wrong password!");
             return array();
         }
         $cookies=collect_cookies($response);
         if ($cookies==array())
         {
-            $this->bot->Console->warn("Couldn't retrieve the authtoken. Please check your username and password.\n");
+            $this->bot->Console->warn("Couldn't retrieve the authtoken. Please check your username and password.");
             return array();
         }
         if (($socket = @fsockopen("chat.deviantart.com", 80)) == false)
         {
-            $this->bot->Console->warn("Failed to connect to deviantART to get authtoken.\n");
+            $this->bot->Console->warn("Failed to connect to chatrooms to get authtoken.\n");
             return array();
         }
         $response = send_headers(
@@ -639,7 +651,7 @@ class dAmn
         }
         else
         {
-            $this->bot->Console->warn("Could not find authtoken!");
+            $this->bot->Console->warn("Couldn't find authtoken!");
             return array(
                 'cookie' => $cookies
             );

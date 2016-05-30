@@ -30,6 +30,30 @@ class bot
         $this->OAuth = new OAuth($this);
     }
 
+    // a variant of send_headers that uses and recycles the dA cookies
+    // Do NOT use this for anything except requests to dA
+    function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=array())
+    {
+        if (!$cookies) $cookies = $this->cookie;
+        $result = send_headers($socket, $host, $url, $referer, $post, $cookies);
+        $newCookies = collect_cookies($result);
+        if ($newCookies)
+        {
+            if (isset($newCookies['auth']))
+            {
+                $this->cookie = $newCookies;
+                echo "Saving new cookies...\n";
+                $bot->saveConfig();
+            }
+            else
+            {
+                echo "No auth cookie. Cookies:";
+                print_r($newCookies);
+            }
+        }
+        return $result;
+    }
+
     // TOOD: better error checking here
     function readConfig($configFile=null)
     {

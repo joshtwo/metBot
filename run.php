@@ -69,16 +69,16 @@ require_once('./core/core.php');
 $bot = new bot();
 // in this current test release we're going to disable OAuth by
 // default as we only use it inside of the private release
-$bot->getOAuth = false;
+//$bot->getOAuth = false;
 
 if (file_exists('./core/status/restart.bot'))
     unlink('./core/status/restart.bot');
 if (file_exists('./core/status/close.bot'))
     unlink('./core/status/close.bot');
 
-if (($noConfigFile = !file_exists('./data/config/login.ini'))
-    || isset($options['c'])
-    || isset($options['config']))
+if (isset($options['c'])
+    || isset($options['config'])
+    || ($noConfigFile = !file_exists('./data/config/login.ini')))
 {
     if (!$noConfigFile)
         $bot->config($user = _or(@$options['config'], @$options['c']));
@@ -209,6 +209,10 @@ function handleLogin(&$bot, $error, $skip_retry=false, $retries=1)
                     $bot->savePk = true;
                 }
                 $retry_error = $bot->dAmn->login($bot->username, $bot->pk);
+            }
+            else
+            {
+                echo "Giving up...\n";
             }
         break;
         case 3:
