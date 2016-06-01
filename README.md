@@ -1,4 +1,3 @@
-# metBot 0.7
 This is a chatroom bot for [dAmn (deviantART Messaging Network)](http://chat.deviantart.com/) written in [PHP](http://php.net). It currently works with PHP 5.5+ but future versions may expect PHP 7. It is heavily event-based and modular (see `module.php` and `dAmn.php` in `core/classes/`), and the experimental branch will tend to have more modules than the ones seen here. Full documentation of the API is currently a work in progress but mostly completed, so don't hesitate to read through the core classes (particularly the above two files in addition to `Event.php`) and see how the current modules are written (see the section "Extending the bot" below) if you want to give writing your own module a shot!
 
 # For new users
@@ -11,7 +10,7 @@ The bot is started by executing `run.php`, but controllers `run.bat` and `run.sh
 
 If this is your first time running metBot, it'll automatically start configuring a new profile for your bot. It'll ask you for the following infortion:
 * Bot username - the username of your bot's dA account
-* Bot password - the password of your bot's dA account
+* Bot password - the password of your bot's dA account.
 * Bot administrator - the name of YOUR dA account
 * Bot trigger - this is a character or string of characters that starts every command you send to the bot in the chatroom. For example, if the trigger is ! then you command the bot like this:
 ```
@@ -35,6 +34,40 @@ These last two options DO NOT WORK ON WINDOWS unless you use an alternative Unix
 !join <channel> - Make your bot join another channel. Example: !join #Botdom
 !user - Manages your bot's user list. This determines who has privileges for what commands. Ex: !user add MyFriend 50 would make the deviantART user MyFriend an Operator on your bot. Also try !users (shows the bot's user list) and !level/!levels (manages/lists the bot's privilege levels).
 
+## Command-line arguments
+Several options and actions can be accessed by giving the start-up script command-line arguments. Note that as of right now, options which you specify this way may end up saved in the config file the bot is using.
+```
+Usage: run.php [OPTION]...
+Runs metBot, the one and only.
+
+Options:
+  -h, --help          Print this help text.
+  -c, --config=USER   Set up a config file, optionally for USER if specified.
+  -u, --user=USER     Run the bot with USER's config file.
+  -o, --owner=USER    Set the owner of the bot to USER.
+  -i, --input         Force input to be on.
+  -I, --no-input      Force input to be off.
+  -l, --logging       Force logging to be on.
+  -L, --no-logging    Force logging to be off.
+  -q, --oauth         Force collection of new OAuth session.
+  -Q, --no-oauth      Keep the bot from attempting to get a new OAuth session
+                        on startup. This is useful when you run the bot on a
+                        server and don't want it possibly freezing up because
+                        something happened to the session.
+  -j, --autojoin=LIST  Set the autojoin list to LIST, a comma-separated list
+                         of chatrooms. You don't need to use # in the names.
+                         ex: run.php -j Botdom,seniors,mychatroom
+  -a, --add-autojoin=LIST  Add the comma-separated list LIST of rooms to the
+                             bot's existing autojoin list.
+
+Note that the "off" options override the "on" options (ex. -I supercedes -i),
+and that -j/--autojoin overrides -a/--add-autojoin. If a login.ini config
+file does not exist and you have not used -u/--user to pick a different file,
+the bot will start configuring by default.
+
+Check out <http://github.com/joshtwo/metBot> for more details, set-up
+instructions and further documentation.
+```
 # Advanced users
 You may not care about this stuff unless you're a little more ambitious.
 
