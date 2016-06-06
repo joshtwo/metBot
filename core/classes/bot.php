@@ -41,7 +41,7 @@ class bot
         {
             if (isset($newCookies['auth']))
             {
-                $this->cookie = $newCookies;
+                $this->cookie = array_merge($this->cookie, $newCookies);
                 echo "Saving new cookies...\n";
                 $bot->saveConfig();
             }
