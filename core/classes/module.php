@@ -18,17 +18,17 @@ class module
     }
 
     // encapsulation boilerplate
-    function getSysName() { return $sysname; }
+    function getSysName() { return $this->sysname; }
     //function setSysName($sysname) { $this->sysname = $sysname; }
     
-    function getName() { return $name; }
+    function getName() { return $this->name; }
     //function setName($name) { $this->name = $name; }
 
-    function getVersion() { return $version; }
+    function getVersion() { return $this->version; }
     // We don't care if the version is a string
     //function setVersion($version) { $this->version = $version; }
 
-    function getInfo() { return $info; }
+    function getInfo() { return $this->info; }
     //function setInfo($info) { $this->info = $info; }
 
     function isOn() { return $this->switch; }

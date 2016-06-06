@@ -48,7 +48,6 @@ class System extends module
 
             if ($cmd->args && $cmd->args != "all")
                 $modList = explode(' ', $cmd->args);
-            print_r($modList);
 
             $not_privd = 0;
             foreach($bot->Modules->mods as $mod => $val)
@@ -90,7 +89,7 @@ class System extends module
                 {
                     continue;
                 }
-                $txt .= "<b><u>".$val->sysname."</u></b>: ";
+                $txt .= "<b><u>".$val->getSysName()."</u></b>: ";
                 foreach($commands_info as $key => $value)
                 {
                     if (!isset($commands_info[$key]->module)) continue;
