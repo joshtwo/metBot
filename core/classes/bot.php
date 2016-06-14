@@ -39,6 +39,9 @@ class bot
         $newCookies = collect_cookies($result);
         if ($newCookies)
         {
+            foreach(array_keys($newCookies) as $key)
+                if ($newCookies[$key] == 'deleted')
+                    unset($newCookies[$key]);
             if (isset($newCookies['auth']))
             {
                 $this->cookie = array_merge($this->cookie, $newCookies);
@@ -94,6 +97,9 @@ class bot
         $this->timestamp = $timestamp;
         $this->startup_time = time();
         $this->cookie = $cookie;
+        foreach(array_keys($this->cookie) as $key)
+            if ($this->cookie[$key] == 'deleted')
+                unset($this->cookie[$key]);
         $this->warnings = $warnings;
         $this->pk = $token;
         $this->defineColors($colors);
