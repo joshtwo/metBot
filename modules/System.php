@@ -52,7 +52,7 @@ class System extends module
             $not_privd = 0;
             foreach($bot->Modules->mods as $mod => $val)
             {
-                if ($modList && !in_array($val->sysname, $modList))
+                if ($modList && !in_array($val->getSysName(), $modList))
                 {
                     $unusable[] = $mod;
                     continue;
@@ -240,7 +240,7 @@ class System extends module
                     $found = false;
                     foreach($bot->Modules->mods as $key => $mod)
                     {
-                        if ($mod->sysname == $module)
+                        if ($mod->getSysName() == $module)
                         {
                             $name = $mod->getName();
                             $version = $mod->getVersion();
@@ -295,7 +295,7 @@ class System extends module
                     $already_on = false;
                     foreach ($bot->Modules->mods as $key => $mod)
                     {
-                        if ($module == $mod->sysname)
+                        if ($module == $mod->getSysName())
                         {
                             if ($mod->switch->isOn())
                                 $already_on = true;
@@ -337,7 +337,7 @@ class System extends module
                     $already_off = false;
                     foreach ($bot->Modules->mods as $key => $mod)
                     {
-                        if ($module == $mod->sysname)
+                        if ($module == $mod->getSysName())
                         {
                             if (!$mod->isOn())
                                 $already_off = true;
