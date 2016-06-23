@@ -28,7 +28,7 @@ class Announce extends module
             $ids = array_keys($this->announcements[$r]);
             foreach ($ids as $i)
             {
-                $this->announcements[$r][$i]['time'] = time();
+                $this->announcements[$r][$i]['time'] = time() + $i * 10;
             }
         }
     }
@@ -56,8 +56,6 @@ class Announce extends module
                     'msg' => $msg,
                     'time' => time()
                 );
-                if ($target == 'chat:ThumbHub')
-                    $this->announcements[$target][count($this->announcements[$target])]['pc'] = 'Deviants';
                 $this->saveAnnouncements();
                 $bot->dAmn->say("{$cmd->from}: The announcement <i>\"$msg\"</i> will be posted every <b>$interval</b> seconds in $chat.", $cmd->ns);
             }
