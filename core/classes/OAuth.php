@@ -195,8 +195,13 @@ class OAuth
         if (isset($response->error) && $response->error == 'invalid_token')
         {
             echo "OAuth token invalid. Retrieving new one...\n";
-            $this->refreshTokens();
-            return $this->call($path, $attrs, $post);
+            if ($this->refreshTokens())
+                return $this->call($path, $attrs, $post);
+            else
+            {
+                echo "Call failed due to token refresh failing.\n";
+                return false;
+            }
         }
         else
             return $response;
@@ -208,7 +213,7 @@ class OAuth
         echo "Refreshing token...\n";
         $response = $this->call('/oauth2/token', array('client_id' => '', 'client_secret' => '', 'refresh_token' => '', 'grant_type' => 'refresh_token'));
         echo "Call completed.\n";
-        if (!@$response->error)
+        if ($response && !@$response->error)
         {
             $this->accessToken = $response->access_token;
             $this->refreshToken = $response->refresh_token;
@@ -216,6 +221,10 @@ class OAuth
             return true;
         }
         else
+        {
+            if (@$response->error)
+                $bot->Console->error("Error refreshing token: {$response->error}");
             return false;
+        }
     }
 }
