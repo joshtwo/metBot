@@ -86,7 +86,7 @@ class dAmnCmds extends module
         if (!$cmd->args)
             $bot->dAmn->say("$cmd->from: You need to give an admin command to perform.");
         else
-            $bot->dAmn->admin($cmd->ns, $ns);
+            $bot->dAmn->admin($cmd->args, $ns);
     }
 
     function c_back($cmd, $bot)
