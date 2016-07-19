@@ -754,7 +754,7 @@ class System extends module
             $bot->dAmn->say("$cmd->from: Guest access to commands is now turned <b>$command</b>.", $cmd->ns);
             break;
         default:
-            $bot->dAmn->say("$cmd->from: Guest access to commands is currently <b>".($bot->noGuests ? "on" : "off")."</b>.", $cmd->ns);
+            $bot->dAmn->say("$cmd->from: Guest access to commands is currently <b>".($bot->noGuests ? "off" : "on")."</b>.", $cmd->ns);
         }
     }
 }
