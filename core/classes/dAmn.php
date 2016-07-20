@@ -29,6 +29,8 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
         $headers .= "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n";
         //$headers .= "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n";
         $headers .= "Accept-Language: en-US,en;q=0.5\r\n";
+        // the fix we've all been waiting for; ask for compressed data
+        $headers .= "Accept-Encoding: gzip, deflate\r\n";
         if (isset($post))
         {
             $headers .= "Content-Type: application/x-www-form-urlencoded\r\n";
@@ -36,14 +38,72 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
         }
         else $headers .= "\r\n";
         $response = "";
-        //echo "OUTGOING:\n\n$headers\n\n";
+        if (_debug('HTTP'))
+            echo "OUTGOING:\n\n$headers\n\n";
         fputs($socket, $headers);
-        if (!$bytes)
+        while (!feof ($socket)) $response .= fgets ($socket, 8192);
+        
+        if (strpos($response, "Content-Encoding: gzip\r\n") !== false)
         {
-            while (!feof ($socket)) $response .= fgets ($socket, 8192);
+            // if it has a content encoding, I think it pretty much must have a body
+            if ($pos = strpos($response, "\r\n\r\n"))
+            {
+                echo "Found CRLF pair...\n";
+                $head = substr($response, 0, $pos);
+                $body = substr($response, $pos + 4);
+            }
+            else // they don't send the HTTP body with 2 CRFLs at the start, so we use Content-Length to manually slice it out
+            {
+                $start = strpos($response, "Content-Length: ");
+                if ($start === false)
+                {
+                    echo "No content length. Checking for gzip header...\n";
+                    $gzipHeader = substr(gzencode(''), 0, 10);
+                    if (($start == strpos($response, $gzipHeader)) === false)
+                    {
+                        echo "Can't find gzip header. Returning unmodified reponse...\n";
+                        if (_debug('HTTP'))
+                            echo "INCOMING RESPONSE (missing gzip header):\n\n" . substr($response, 0, 900) . "\n\n";
+                        return $response;
+                    }
+                    echo "Found gzip header at position $start\n";
+                    $head = substr($response, 0, $start);
+                    $body = substr($response, $start);
+                }
+                else
+                {
+                    $start += strlen("Content-Length: ");
+                    $end = strpos($response, "\r\n", $start);
+                    $contentLength = substr($response, $start, $end - $start);
+                    if (_debug('HTTP'))
+                        echo "Content length is $contentLength\n";
+                    $contentLength = (int) $contentLength;
+                    $head = substr($response, 0, 0 - $contentLength);
+                    $body = substr($response, 0 - $contentLength);
+                }
+            }
+            if (strpos($response, "Transfer-Encoding: chunked\r\n") !== false)
+            {
+                $body = removeChunksFromBody($body);
+            }
+            $body = gzdecode($body);
+            //file_put_contents('request-log.txt', "-------------\nHEAD: <[$head]>\n\nBODY: <[$body]>\n\n------------\n", FILE_APPEND);
+            file_put_contents('request-log.txt', "-------------\nRESPONSE: <[$response]>\n\n------------\n", FILE_APPEND);
+            if (_debug('HTTP'))
+            {
+                echo "INCOMING HEAD:\n\n$head\n\n";
+                echo "INCOMING BODY DECODED:\n\n" . substr($body, 0, 200) . "\n\n";
+            }
+            return $head . "\r\n\r\n" . $body;
+            
+        }
+        else
+        {
+            echo "We didn't get back a compressed response, oddly enough.\n";
+            if (_debug('HTTP'))
+                echo "INCOMING:\n\n" . substr($response, 0, 300) . "\n\n";
             return $response;
         }
-        else return fgets($socket, $bytes);
     }
     catch (Exception $e)
     {
@@ -79,6 +139,64 @@ function cookie_string($cookies)
     }
     return $str;
 }
+
+function removeChunks($response)
+{
+    if (($pos = strpos($response, "\r\n\r\n")) !== false)
+    {
+        $head = substr($response, 0, $pos);
+        $body = substr($response, $pos + 4);
+        if (strpos($response, "Transfer-Encoding: chunked\r\n") !== false) // this is safe
+        {
+            echo "Found chunked response...\n";
+            $result = '';
+            $num = null;
+            $previous = null;
+            while ($num !== 0)
+            {
+                $pos = strpos($body, "\r\n");
+                if ($pos === false)
+                    break;
+                $num = substr($body, 0, $pos);
+                $num = hexdec($num);
+                if (!$num)
+                    break;
+                $result .= substr($body, $pos+2, $num); 
+                $body = substr($body, $pos + 2 + $num + 2);
+            }
+            return $head . $result;
+        }
+        return $head . $body;
+    }
+    else
+    {
+        echo "Not chunked. Length: " . strlen($response) . "\n";
+        // right now, if no chunking happens, just return the request unaffected
+        return $response;
+    }
+}
+
+function removeChunksFromBody($body)
+{
+    echo "Found chunked response...\n";
+    $result = '';
+    $num = null;
+    $previous = null;
+    while ($num !== 0)
+    {
+        $pos = strpos($body, "\r\n");
+        if ($pos === false)
+            break;
+        $num = substr($body, 0, $pos);
+        $num = hexdec($num);
+        if (!$num)
+            break;
+        $result .= substr($body, $pos+2, $num); 
+        $body = substr($body, $pos + 2 + $num + 2);
+    }
+    return $result;
+}
+
 
 class dAmn
 {
