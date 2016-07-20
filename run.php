@@ -12,7 +12,13 @@ function _or()
             return $a;
 }
 
-$options = getopt('hc::u:iIlLqQj:a:', array(
+// is a certain debug flag defined?
+function _debug($flag)
+{
+    return defined("METBOT_DEBUG_$flag");
+}
+
+$options = getopt('hc::u:iIlLqQj:a:D:', array(
     'help',
     'config::',
     'user:',
@@ -52,6 +58,7 @@ Options:
                          ex: {$argv[0]} -j Botdom,seniors,mychatroom
   -a, --add-autojoin=LIST  Add the comma-separated list LIST of rooms to the
                              bot's existing autojoin list.
+  -D FLAGS            Enable the comma-separated list of debug flags FLAGS.
 
 Note that the "off" options override the "on" options (ex. -I supercedes -i),
 and that -j/--autojoin overrides -a/--add-autojoin. If a login.ini config
@@ -76,21 +83,26 @@ if (file_exists('./core/status/restart.bot'))
 if (file_exists('./core/status/close.bot'))
     unlink('./core/status/close.bot');
 
+if (isset($options['D']))
+{
+    foreach (explode(',', $options['D']) as $constant)
+        define("METBOT_DEBUG_$constant", true);
+}
+
 if (isset($options['c'])
     || isset($options['config'])
     || ($noConfigFile = !file_exists('./data/config/login.ini')))
 {
     if (!$noConfigFile)
-        $bot->config($user = _or(@$options['config'], @$options['c']));
-    else
-        $bot->config();
-
-    if (!$noConfigFile)
     {
-        $answer = $bot->Console->get("You manually chose to configure $user. Do you want to connect as $user too? [y/n]");
+        $bot->config($user = _or(@$options['config'], @$options['c']));
+        $answer = $bot->Console->get("Do you want to connect as $user? [y/n]");
         if ($answer == "y" || $answer == "Y")
             $bot->configFile = $user;
+        else exit(); // quit after setting up new config file
     }
+    else
+        $bot->config();
 }
 
 if (isset($options['u']) || isset($options['user']))
