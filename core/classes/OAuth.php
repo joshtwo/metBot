@@ -60,7 +60,7 @@ class OAuth
         
         $attrs = array(
             'client_id' => '',
-            'redirect_uri' => 'http://localhost:1338',
+            'redirect_uri' => 'http://thumbhub-test-1.herokuapp.com:1338',
             'response_type' => 'code'
         );
         if ($scope)
@@ -126,7 +126,7 @@ class OAuth
             'client_secret' => '',
             'code' => '',
             'grant_type' => 'authorization_code',
-            'redirect_uri' => 'http://localhost:1338'
+            'redirect_uri' => 'http://thumbhub-test-1.herokuapp.com:1338'
         ));
         if (!@$response->error)
         {
