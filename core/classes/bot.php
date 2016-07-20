@@ -32,6 +32,7 @@ class bot
 
     // a variant of send_headers that uses and recycles the dA cookies
     // Do NOT use this for anything except requests to dA
+    // Will be replaced by Browser class in the future
     function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=array())
     {
         if (!$cookies) $cookies = $this->cookie;
@@ -97,9 +98,10 @@ class bot
         $this->timestamp = $timestamp;
         $this->startup_time = time();
         $this->cookie = $cookie;
-        foreach(array_keys($this->cookie) as $key)
-            if ($this->cookie[$key] == 'deleted')
-                unset($this->cookie[$key]);
+        if ($this->cookie)
+            foreach(array_keys($this->cookie) as $key)
+                if ($this->cookie[$key] == 'deleted')
+                    unset($this->cookie[$key]);
         $this->warnings = $warnings;
         $this->pk = $token;
         $this->defineColors($colors);
