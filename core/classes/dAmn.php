@@ -138,42 +138,6 @@ function cookie_string($cookies)
     return $str;
 }
 
-function removeChunks($response)
-{
-    if (($pos = strpos($response, "\r\n\r\n")) !== false)
-    {
-        $head = substr($response, 0, $pos);
-        $body = substr($response, $pos + 4);
-        if (strpos($response, "Transfer-Encoding: chunked\r\n") !== false) // this is safe
-        {
-            echo "Found chunked response...\n";
-            $result = '';
-            $num = null;
-            $previous = null;
-            while ($num !== 0)
-            {
-                $pos = strpos($body, "\r\n");
-                if ($pos === false)
-                    break;
-                $num = substr($body, 0, $pos);
-                $num = hexdec($num);
-                if (!$num)
-                    break;
-                $result .= substr($body, $pos+2, $num);
-                $body = substr($body, $pos + 2 + $num + 2);
-            }
-            return $head . $result;
-        }
-        return $head . $body;
-    }
-    else
-    {
-        echo "Not chunked. Length: " . strlen($response) . "\n";
-        // right now, if no chunking happens, just return the request unaffected
-        return $response;
-    }
-}
-
 function removeChunksFromBody($body)
 {
     echo "Found chunked response...\n";
