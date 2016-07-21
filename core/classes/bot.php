@@ -310,7 +310,7 @@ class bot
             unset($options['add-autojoin']);
         }
 
-        // now, all values which the user have set with command-line arguments
+        // now, all values which the user has set with command-line arguments
         // that haven't been changed since startup should be unset in the
         // $values array
         // all we have to do now is merge that up with the current config
