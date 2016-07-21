@@ -45,6 +45,9 @@ Options:
   -c, --config=USER   Set up a config file, optionally for USER if specified.
   -u, --user=USER     Run the bot with USER's config file.
   -o, --owner=USER    Set the owner of the bot to USER.
+  -t, --trigger=TRIGS Set the bot's trigger(s), a comma-separated list. If you
+                        want to use a comma in your trigger, type it as \, in
+                        the list. Ex -t !,\,,^ gives you ! , ^ as 3 triggers.
   -i, --input         Force input to be on.
   -I, --no-input      Force input to be off.
   -l, --logging       Force logging to be on.
@@ -54,11 +57,12 @@ Options:
                         on startup. This is useful when you run the bot on a
                         server and don't want it possibly freezing up because
                         something happened to the session.
-  -j, --autojoin=LIST  Set the autojoin list to LIST, a comma-separated list
-                         of chatrooms. You don't need to use # in the names.
-                         ex: run.php -j Botdom,seniors,mychatroom
+  -j, --autojoin=LIST Set the autojoin list to LIST, a comma-separated list
+                        of chatrooms. You don't need to use # in the names.
+                        ex: run.php -j Botdom,seniors,mychatroom
   -a, --add-autojoin=LIST  Add the comma-separated list LIST of rooms to the
                              bot's existing autojoin list.
+  -D FLAGS            Enable the comma-separated list of debug flags FLAGS.
 
 Note that the "off" options override the "on" options (ex. -I supercedes -i),
 and that -j/--autojoin overrides -a/--add-autojoin. If a login.ini config
