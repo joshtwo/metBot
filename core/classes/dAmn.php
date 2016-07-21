@@ -981,70 +981,40 @@ class dAmn
         }
     }
 
-    // TODO: rewrite this
-    function deform($chat) // makes regular chatrooms turn into #chat, private chats become @user
+    // turn formatted namespaces into #chat or @user (private chats)
+    function deform($chat)
     {
-        if (substr($chat, 0, 5) == "chat:")
-            return str_replace("chat:", "#", $chat);
-        elseif (substr($chat, 0, 6) == "login:")
-            return str_replace("login:", "", $chat);
-        elseif (substr($chat, 0, 6) == "pchat:")
+        if (($pos = strpos($chat, ':')) !== false)
         {
-            $chat = str_replace("pchat:", "", $chat);
-            $chat = explode(':', $chat);
-            if ($chat[0] == $this->bot->username)
+            list($ns, $name) = explode(':', $chat, 2);
+            switch($ns)
             {
-                return "@$chat[1]";
-            }
-            else
-            {
-                return "@$chat[0]";
-            }
-        }
-        else
-        {
-            if ($chat[0]=="#" || $chat[0]=="@")
+            case 'chat':
+                return '#' . $name;
+            case 'pchat':
+                $names = explode(':', $name); // assume there are two
+                if (($i = array_search($this->bot->username, $names)) !== false)
+                    return '@' . $names[$i ? 0 : 1];
+                else return $chat;
+            case 'login':
                 return $chat;
-            else
-                return "#".$chat;
+            }
         }
+        else if ($chat[0] == '#' || $chat[0] == '@')
+            return $chat;
+        else return '#' . $chat;
     }
 
-    // TODO: rewrite this
-    function format($chat) // format namespace to be sendable to dAmn
+    // does the opposite; turns a deformed channel into a formatted one
+    function format($chat)
     {
-        if (!preg_match("/^(chat|pchat|login):(\s|)/", substr($chat, 0, 6)))
-        {
-            if ($chat[0] == "#")
-            {
-                $chat = str_replace("#", "chat:", $chat);
-            }
-            elseif ($chat[0] == "@")
-            {
-                $chat = str_replace("@", "", $chat);
-                $s = strtolower($chat);
-                $me = strtolower($this->bot->username);
-                $a = array($s, $me);
-                sort($a);
-                foreach($a as $key => $name)
-                {
-                    if (preg_match("/$name/i", $chat))
-                    {
-                        $a[$key] = $chat;
-                    }
-                    else
-                    {
-                        $a[$key] = $this->bot->username;
-                    }
-                }
-                $chat = "pchat:".join(':', $a);
-            }
-            else
-            {
-                $chat = "chat:".$chat;
-            }
-        }
-        return $chat;
+        $name = substr($chat, 1);
+        if (($pos = strpos($chat, ':')) !== false && in_array(substr($chat, 0, $pos), array('chat','pchat','login')))
+            return $chat;
+        elseif (@$chat[0] == '@')
+            return 'pchat:' . min($this->bot->username, $name) . ':' . max($this->bot->username, $name);
+        else
+            return 'chat:' . $chat;
     }
 }
 ?>
