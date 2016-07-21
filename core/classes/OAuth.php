@@ -55,9 +55,9 @@ class OAuth
         // we don't care about the response
         $response = '';
         //socket_recv($c, $response, 8192, 0);
-        $response = fread($c, 8192); 
+        $response = fread($c, 8192);
         $response = '';
-        
+
         $attrs = array(
             'client_id' => '',
             'redirect_uri' => 'http://localhost:1338',
@@ -94,7 +94,7 @@ class OAuth
             "",
             $body
         );
-        $reply = join("\r\n", $reply); 
+        $reply = join("\r\n", $reply);
         //socket_send($c, $reply, strlen($reply), 0);
         fwrite($c, $reply);
         //socket_close($c);
@@ -173,7 +173,7 @@ class OAuth
                     $num = hexdec($num);
                     if (!$num)
                         break;
-                    $result .= substr($body, $pos+2, $num); 
+                    $result .= substr($body, $pos+2, $num);
                     $body = substr($body, $pos + 2 + $num + 2);
                 }
                 return json_decode($result);

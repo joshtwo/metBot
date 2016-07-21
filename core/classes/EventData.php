@@ -5,7 +5,7 @@ class EventData
     // the channel/namespace in which this event occured. ex. the channel
     // a message was sent in, the channel we've received the userlist for
     public $ns;
-    // who's the target of the event? ex. who said it, who was kicked, 
+    // who's the target of the event? ex. who said it, who was kicked,
     // who got promoted
     public $from;
     // arguments to the event, additional non-protocol data. ex. command args
@@ -32,7 +32,7 @@ class EventData
     // string where text within quotes have the separator character within
     // them replaced with \0 so it can be parsed as a single argument, as \0
     // can't be present inside of a dAmn packet. I should possibly make this
-    // return an array instead of doing the \0 thing... 
+    // return an array instead of doing the \0 thing...
     // str is the argument string, while sep is the argument separator, like " "
     function parseQuotes($str, $sep)
     {

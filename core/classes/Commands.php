@@ -3,12 +3,12 @@
 class Commands
 {
     private $bot;
-    
+
     function __construct($bot)
     {
         $this->bot = $bot;
     }
-    
+
     function execute($command)
     {
         $ns = $this->bot->Event->getNs();
@@ -66,7 +66,7 @@ class Commands
                 $this->bot->dAmn->say("There is no command \"$command\".", $ns);
         $this->bot->Event->setArgs(null);
     }
-    
+
     function has_privs($user, $command)
     {
         $level = 0;
@@ -80,14 +80,14 @@ class Commands
         }
 
         if ($this->bot->noGuests && $level == 0) return false;
-            
+
         foreach($this->bot->Modules->mods as $key => $value)
         {
             if (isset($this->bot->Modules->mods[$key]->commands[$command]))
                 return ($this->bot->Modules->mods[$key]->commands[$command]->privs <= $level);
         }
     }
-    
+
     function process($who, $str)
     {
         $this->bot->Event->setFrom($who);

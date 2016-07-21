@@ -42,7 +42,7 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
             echo "OUTGOING:\n\n$headers\n\n";
         fputs($socket, $headers);
         while (!feof ($socket)) $response .= fgets ($socket, 8192);
-        
+
         if (strpos($response, "Content-Encoding: gzip\r\n") !== false)
         {
             // if it has a content encoding, I think it pretty much must have a body
@@ -95,7 +95,7 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
                 echo "INCOMING BODY DECODED:\n\n" . substr($body, 0, 200) . "\n\n";
             }
             return $head . "\r\n\r\n" . $body;
-            
+
         }
         else
         {
@@ -122,7 +122,7 @@ function collect_cookies($response)
         {
             $eq = strpos($line, '=');
             $cookies[substr($line, 12, $eq - 12)] = substr($line, $eq + 1, strpos($line, '; ') - ($eq + 1));
-        } 
+        }
     }
     return $cookies;
 }
@@ -161,7 +161,7 @@ function removeChunks($response)
                 $num = hexdec($num);
                 if (!$num)
                     break;
-                $result .= substr($body, $pos+2, $num); 
+                $result .= substr($body, $pos+2, $num);
                 $body = substr($body, $pos + 2 + $num + 2);
             }
             return $head . $result;
@@ -191,7 +191,7 @@ function removeChunksFromBody($body)
         $num = hexdec($num);
         if (!$num)
             break;
-        $result .= substr($body, $pos+2, $num); 
+        $result .= substr($body, $pos+2, $num);
         $body = substr($body, $pos + 2 + $num + 2);
     }
     return $result;
@@ -202,7 +202,7 @@ class dAmn
 {
     // TODO: clean up public implementation details somehow
     public $s;
-    
+
     private $bot;
 
     // for debugging
@@ -485,7 +485,7 @@ class dAmn
             case 'recv':
                 $this->bot->Event->setNs($ns = $ns = $packet->param);
                 $chat = $this->deform($ns);
-                
+
                 switch($packet->body->cmd)
                 {
                     case 'msg':
@@ -641,7 +641,7 @@ class dAmn
                         $chat = $this->deform($ns);
                         $this->bot->Console->notice("Topic for $chat set by ".$packet['by']);
                     break;
-                    
+
                     case 'members':
                         $members = $packet->body;
                         $this->members_packet[$ns] = $members;
@@ -655,14 +655,14 @@ class dAmn
                         $chat = $this->deform($ns);
                         $this->bot->Console->notice("Got members for $chat");
                     break;
-                    
+
                     case 'privclasses':
                         $privs = new Packet($packet->body, ':');
                         $this->info[$ns]['pc'] = $privs->args;
                         $chat = $this->deform($ns);
                         $this->bot->Console->notice("Got privclasses for $chat");
                     break;
-                    
+
                     case 'info':
                         $conns = explode("conn\n", $packet->body);
                         $info = new Packet(array_shift($conns));
@@ -704,7 +704,7 @@ class dAmn
             $this->bot->Console->warn("Couldn't get form keys; no response from dA. Using last retrieved authtoken...");
             return array('token' => $this->bot->pk, 'cookie' => $this->bot->cookie);
         }
-        $cookies = collect_cookies($response); 
+        $cookies = collect_cookies($response);
         preg_match(
             '/name="validate_token" value="(\w+)".+?name="validate_key" value="(\w+)"/Ums',
             $response,
@@ -714,7 +714,7 @@ class dAmn
         $post = "ref=" . urlencode("https://www.deviantart.com/users/loggedin");
         $post .= "&username=$username&password=" . urlencode($password);
         $post .= "&remember_me=1&validate_token=$matches[1]&validate_key=$matches[2]";
-        
+
         if (($socket = @fsockopen("ssl://www.deviantart.com", 443)) == false)
         {
             $this->bot->Console->warn("Couldn't open socket to deviantart.com. Using last retrieved authtoken...");
@@ -775,7 +775,7 @@ class dAmn
             );
         }
     }
-    
+
     function login($username, $token, $agent="") // log in to dAmn
     {
         $this->s = fsockopen('tcp://chat.deviantart.com', 3900, $this->socket_err, $this->socket_err_str);
@@ -789,13 +789,13 @@ class dAmn
         {
             $this->bot->Console->notice("Connected to dAmn...");
         }
-        
+
         if (!$agent)
             $agent = $this->bot->name . ' ' . $this->bot->version;
         $data = "dAmnClient 0.2\nagent=$agent\n\0";
         #$channel = $this->deform($this->bot->join[0]);
         #$data="dAmnClient 0.2\nagent=dAmn WebClient 0.7.pre-1 - dAmn Flash plugin 1.2\nbrowser=$agent\nurl=http://chat.deviantart.com/chat/$channel\n\0";
-        
+
         echo "Data: $data\n";
         $this->bot->Console->notice("Initiating dAmn handshake...");
         $this->send($data);
@@ -841,7 +841,7 @@ class dAmn
                 if ($this->bot->Event->getPacket()->cmd != "ping")
                     $mkprompt = true;
             }
-            
+
             if ($mkprompt==true)
             {
                 echo $this->bot->Console->mkprompt();

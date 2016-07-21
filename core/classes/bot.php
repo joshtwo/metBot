@@ -92,10 +92,10 @@ class bot
             $this->levels = $levels;
             $this->privs = $privs;
         }
-        
+
         if (!isset($this->privs[100]) || !in_array($this->admin, $this->privs[100]))
             $this->privs[100][] = $this->admin;
-        
+
         if ($this->levels == null)
         {
             $this->levels = array(
@@ -107,7 +107,7 @@ class bot
                 -1  => "Banned",
             );
         }
-        
+
         $this->log = $log;
         $this->timestamp = $timestamp;
         $this->startup_time = time();
@@ -215,7 +215,7 @@ class bot
         if ((isset($options['i']) || isset($options['input'])))
         {
             if ($values['input'] === true)
-            {   
+            {
                 echo "Skipping input (set to \"on\" on startup)\n";
                 unset($values['input']);
             }
@@ -339,13 +339,13 @@ class bot
     // TODO: Possibly give separate logins separate userlists? Could just merge this info into login.ini
     function saveUserInfo()
     {
-        $contents = "\$privs = ".var_export($this->privs, true).";\n";    
+        $contents = "\$privs = ".var_export($this->privs, true).";\n";
         $contents .= "\$levels = ".var_export($this->levels, true).";";
         $fp = fopen('./data/config/users.ini', 'w');
         fwrite($fp, $contents);
         fclose($fp);
     }
-    
+
     function time($secs)
     {
         $time = array();
@@ -473,9 +473,9 @@ class bot
             echo "If you use Windows, PLEASE NOTE that these last two options will probably not work if you pick yes. Please see the README.\n";
             $skip = @strtolower($this->Console->get("Do you want to skip these? If you're unsure, pick yes. [y/n]: "))[0] == "y";
         }
-        
+
         if (!$skip)
-        {   
+        {
             $this->colors = strtolower($this->Console->get("Would you like to use colors in the console window? [y/n]: ")) == "y";
             $this->input = strtolower($this->Console->get("Would you like to use console input? [y/n]: ")) == "y";
         }

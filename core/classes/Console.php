@@ -3,12 +3,12 @@
 class Console
 {
     private $bot;
-    
+
     function __construct($bot)
     {
         $this->bot =& $bot;
     }
-    
+
     function msg($text, $type=null, $log=true, $fp=null)
     {
         $msg = '';
@@ -19,7 +19,7 @@ class Console
             else
                 $msg = "\n";
         }
-        
+
         if ($type == null)
         {
             $msg .= BLUE_BOLD.'['.CYAN.date($this->bot->timestamp).BLUE_BOLD.']'.NORM." $text\n";
@@ -39,7 +39,7 @@ class Console
             {
                 if ($this->bot->colors)
                 {
-                    
+
                     $text = $this->stripColors($text);
                 }
                 $this->log($text, $type);
@@ -50,13 +50,13 @@ class Console
         else
             echo $msg;
     }
-    
+
     function notice($text, $type=null, $log=true)
     {
         $text = GREEN_BOLD.'** '.NORM.$text;
         $this->msg($text, $type, $log);
     }
-    
+
     function warn($text, $type=null)
     {
         $msg = '';
@@ -70,7 +70,7 @@ class Console
         $msg .= RED_BOLD.'!! '.$text.NORM;
         $this->msg($msg, $type);
     }
-    
+
     function log($text, $type)
     {
         is_dir('./data/logs/') || mkdir('./data/logs/');
@@ -112,38 +112,38 @@ class Console
         }
         return rtrim($input, "\n");
     }
-    
+
     function stripColors($text)
     {
         $text = str_replace(NORM_BOLD, '', $text);
         $text = str_replace(NORM, '', $text);
-        
+
         $text = str_replace(RED_BOLD, '', $text);
         $text = str_replace(RED, '', $text);
-        
+
         $text = str_replace(GREEN_BOLD, '', $text);
         $text = str_replace(GREEN, '', $text);
-        
+
         $text = str_replace(YELLOW_BOLD, '', $text);
         $text = str_replace(YELLOW, '', $text);
-        
+
         $text = str_replace(BLUE_BOLD, '', $text);
         $text = str_replace(BLUE, '', $text);
-        
+
         $text = str_replace(PURPLE_BOLD, '', $text);
         $text = str_replace(PURPLE, '', $text);
-        
+
         $text = str_replace(CYAN_BOLD, '', $text);
         $text = str_replace(CYAN, '', $text);
-        
+
         $text = str_replace(WHITE_BOLD, '', $text);
         $text = str_replace(WHITE, '', $text);
-        
+
         $text = str_replace(BLACK_BOLD, '', $text);
         $text = str_replace(BLACK, '', $text);
         return $text;
     }
-    
+
     function mkprompt()
     {
         $prompt = GREEN_BOLD.$this->bot->dAmn->deform($this->bot->ns).RED_BOLD.' ~> '.NORM;

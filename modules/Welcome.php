@@ -9,7 +9,7 @@ class Welcome extends module
     public $welcomes = array();
     public $switches = array();
     public $indv = false;
-    
+
     function main()
     {
         $this->addCmd("wt", 50, "Sets a welcome. The #<i>channel</i> parameter is optional. If you do not specify it, the welcome will be set for the current channel. In all welcomes, <b>{from}</b> is replaced with the name of the person that enters the room.<sub><ul><li>Use <b>{trigger}wt #<i>channel</i> on/off</b> to turn welcomes on and off.</li><li>Use <b>{trigger}wt #<i>channel</i> all <i>message</i></b> to welcome everyone that enters #<i>channel</i> with <i>message</i></li><li>Use <b>{trigger}wt #<i>channel</i> pc <i>privclass</i> <i>message</i></b> to welcome everyone that joins and is in the <i>privclass</i> privclass with <i>message</i>.</li><li>Use <b>{trigger}wt #<i>channel</i> indv/individual <i>message</i></b> to let people set their own welcomes with the {trigger}welcome command, with their welcomes coming after the message <i>message</i>. You do not have to set an individual welcome message.</li><li>Use <b>{trigger}wt show</b> to show the settings configured in the welcome module for all rooms.</li></ul>");
@@ -18,7 +18,7 @@ class Welcome extends module
         $this->load($this->welcomes, "welcomes");
         $this->load($this->switches, "switch");
     }
-    
+
     function c_wt($cmd, $bot)
     {
         $chan = $bot->dAmn->deform($cmd->ns());
@@ -31,7 +31,7 @@ class Welcome extends module
                 $bot->dAmn->say("$cmd->from: The welcome <i>\"$msg\"</i> was set for all people in <b>$chan</b>.", $cmd->ns);
                 if ($this->switches[$ns] != "on")
                     $this->switches[$ns] = "on";
-                    
+
                 $this->save($this->welcomes, "welcomes");
                 $this->save($this->switches, "switch");
             break;
@@ -42,7 +42,7 @@ class Welcome extends module
                 $bot->dAmn->say("$cmd->from: The welcome <i>\"$msg\"</i> was set for all people in the privclass <b>$pc</b> in <b>$chan</b>.", $cmd->ns);
                 if ($this->switches[$ns] != "on")
                     $this->switches[$ns] = "on";
-                    
+
                 $this->save($this->welcomes, "welcomes");
                 $this->save($this->switches, "switch");
             break;
@@ -54,7 +54,7 @@ class Welcome extends module
                     $bot->dAmn->say("$cmd->from: People can now set their own welcomes in <b>$chan</b>.", $cmd->ns);
                     if ($this->switches[$ns] != "on")
                         $this->switches[$ns] = "on";
-                        
+
                     $this->save($this->welcomes, "welcomes");
                     $this->save($this->switches, "switch");
                 }
@@ -64,7 +64,7 @@ class Welcome extends module
                     $bot->dAmn->say("$cmd->from: People can now set their own welcomes in <b>$chan</b>, coming after the message <i>\"".$cmd->arg(1, true)."\"</i>.", $cmd->ns);
                     if ($this->switches[$ns] != "on")
                         $this->switches[$ns] = "on";
-                    
+
                     $this->save($this->welcomes, "welcomes");
                     $this->save($this->switches, "switch");
                 }
@@ -94,7 +94,7 @@ class Welcome extends module
                             if($this->welcomes[$key]['pc']==NULL)
                                 unset($this->welcomes[$key]['pc']);
                         }
-                        
+
                         if (isset($this->welcomes[$key]['indv']))
                         {
                             if ($this->welcomes[$key]['indv'] == NULL)
@@ -105,13 +105,13 @@ class Welcome extends module
                                 unset($this->welcomes[$key]['indv']);
                             }
                         }
-                        
-                        
+
+
                         if ($this->welcomes[$key] == NULL)
                         {
                             if (is_array($copy))
                                 $this->welcomes = $copy;
-                            
+
                             $copy = '';
                             continue;
                         }
@@ -211,7 +211,7 @@ class Welcome extends module
                 $bot->Commands->execute("help");
         }
     }
-        
+
     function c_welcome($cmd, $bot)
     {
         $msg = $cmd->arg(0, true);
@@ -242,7 +242,7 @@ class Welcome extends module
             $bot->Commands->execute("help");
         }
     }
-    
+
     function do_welcome($evt, $bot)
     {
         if (isset($this->welcomes[$evt->ns]) && is_array($this->switches) && isset($this->switches[$evt->ns]))

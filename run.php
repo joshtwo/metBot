@@ -127,7 +127,7 @@ $bot->readConfig();
 if (isset($options['o']) || isset($options['owner']))
 {
     $bot->admin = _or(@$options['owner'], @$options['o']);
-    $bot->Console->notice("Setting owner to {$bot->admin}!"); 
+    $bot->Console->notice("Setting owner to {$bot->admin}!");
 }
 
 if (isset($options['t']) || isset($options['trigger']))
@@ -280,7 +280,7 @@ function handleLogin(&$bot, $error, $skip_retry=false, $retries=1)
             exit();
         break;
     }
-    
+
     if ($retry_error != 1 && !$skip_retry)
     {
         handleLogin($bot, $retry_error, true);
@@ -336,7 +336,7 @@ function run(&$bot)
 
     if ($bot->input === null)
         $bot->input = $bot->start_input;
-    
+
     while (!$bot->quit)
     {
         usleep(5000);

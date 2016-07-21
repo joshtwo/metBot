@@ -1,18 +1,18 @@
 <?php
 class Packet implements ArrayAccess
-{    
+{
     public $cmd;
     public $param;
     public $body;
     public $args = array();
     public $raw;
-    
+
     function __construct($data=null, $sep='=', $parse_body=true)
     {
         if ($data!=null)
         {
             $this->parse($data, $sep);
-            
+
             if ($parse_body && $this->body != NULL && $this->cmd != 'property' && $this->cmd != 'kicked')
             {
                 $this->body = new Packet($this->body, '=', false);
@@ -29,7 +29,7 @@ class Packet implements ArrayAccess
             $this->body = substr($body, 2);
             $data = substr($data, 0, strpos($data, "\n\n"));
         }
-        
+
         foreach(explode("\n", $data) as $id => $str)
         {
             if (($pos = strpos($str, $sep)) != 0)
@@ -54,27 +54,27 @@ class Packet implements ArrayAccess
             }
         }
     }
-    
+
     function offsetExists($offset)
     {
         return isset($this->args[$offset]);
     }
-    
+
     function offsetGet($offset)
     {
         return isset($this->args[$offset]) ? $this->args[$offset] : NULL;
     }
-    
+
     function offsetSet($offset, $value)
     {
         $this->args[$offset] = $value;
     }
-    
+
     function offsetUnset($offset)
     {
         unset($this->args[$offset]);
     }
-    
+
     function __toString()
     {
         return $this->raw;

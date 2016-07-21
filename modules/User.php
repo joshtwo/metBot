@@ -5,7 +5,7 @@ class User extends module
     protected $name = "User System Commands";
     protected $version = "1";
     protected $info = "This module has commands that manages the bot's user system.";
-    
+
     function main()
     {
         $this->addCmd('level', 75, "Manages the privclass list.<sub><ul><li>Type <b>{trigger}level add <i>privclass</i> <i>level</i></b> to add the privclass <i>privclass</i> with the userlevel <i>level</i>.</li><li>Type <b>{trigger}level del <i>privclass</i></b> to remove the privclass <i>privclass</i> and everyone in it.</li><li>Type <b>{trigger}level ren/rename <i>oldname</i> <i>newname</i></b> to rename the privclass <i>oldname</i> to <i>newname</i>.</li></ul>");
@@ -13,7 +13,7 @@ class User extends module
         $this->addCmd('users', 25, "Shows the user access list.");
         $this->addCmd('levels', 25, "Show's the privclass list.");
     }
-    
+
     function c_user($cmd, $bot)
     {
         $command = $cmd->arg(0);
@@ -62,7 +62,7 @@ class User extends module
                             break;
                         }
                     }
-                    
+
                     if ($found)
                     {
                         $key = array_search($user, $bot->privs[$level]);
@@ -70,7 +70,7 @@ class User extends module
                         $bot->dAmn->say("$cmd->from: <b>$user's</b> was deleted from the privilege table.", $cmd->ns);
                         $bot->saveUserInfo();
                     }
-                    
+
                     else
                     {
                         $bot->dAmn->say("$cmd->from: $user is not in the privilege table.", $cmd->ns);
@@ -85,12 +85,12 @@ class User extends module
         }
         else
         {
-            
+
             $bot->Event->setArgs("user");
             $bot->Commands->execute("help");
         }
     }
-    
+
     function c_users($cmd, $bot)
     {
         $text = '';
@@ -115,13 +115,13 @@ class User extends module
         }
         $bot->dAmn->say("<abbr title=\"$cmd->from\"></abbr><b>Users:</b><br><sub>$text</sub>", $cmd->ns);
     }
-    
+
     function c_level($cmd, $bot)
     {
         $command = $cmd->arg(0);
         $level   = $cmd->arg(1);
         $priv    = $cmd->arg(2);
-        
+
         if ($command != -1)
         {
             if ($command == "add")
@@ -222,7 +222,7 @@ class User extends module
             $bot->Commands->execute("help");
         }
     }
-    
+
     function c_levels($cmd, $bot)
     {
         $levels = array();
@@ -231,6 +231,6 @@ class User extends module
             $levels[] = "<b>$name</b>: $level";
         }
         $bot->dAmn->say("<abbr title=\"$cmd->from\"></abbr><b>Levels:</b><br><sub>".join("<br>", $levels)."</sub>", $cmd->ns);
-    }                
+    }
 }
 ?>

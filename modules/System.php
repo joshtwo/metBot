@@ -6,7 +6,7 @@ class System extends module
     protected $version = "1.5";
     protected $info = "These are the default system commands.";
     public $noerror = false;
-    
+
     function main()
     {
         $this->addCmd('about', 0, "This tells you about the bot.");
@@ -127,7 +127,7 @@ class System extends module
             $txt = "<abbr title=\"$cmd->from\"></abbr>Commands that are <s>striked</s> are disabled.<br><br><sub>";
             $cmds = array();
             $used_levels = array();
-            
+
             foreach($bot->Modules->mods as $mod => $val)
             {
                 foreach($val->commands as $key => $value)
@@ -140,7 +140,7 @@ class System extends module
                     }
                 }
             }
-            
+
             foreach($bot->levels as $lvl => $name)
             {
                 if (!in_array($lvl, $used_levels)) continue;
@@ -168,7 +168,7 @@ class System extends module
         if($cmd->args)
         {
             $help_command = $cmd->arg(0);
-    
+
             if ($cmd->arg(1) != -1)
             {
                 $cmd->from = $cmd->arg(1, true);
@@ -182,7 +182,7 @@ class System extends module
                 }
             }
 
-            
+
             if ($help_text == null)
             {
                 $bot->dAmn->say("$cmd->from: There is no help text for \"$help_command\".", $cmd->ns);
@@ -220,12 +220,12 @@ class System extends module
 
         $bot->dAmn->say("<abbr title=\"$cmd->from\"></abbr>$txt", $cmd->ns);
     }
-    
+
     function c_module($cmd, $bot)
     {
         $command = $cmd->arg(0);
         $module = $cmd->arg(1);
-        
+
         if ($command != -1)
         {
             if ($command == "info")
@@ -306,7 +306,7 @@ class System extends module
                             }
                         }
                     }
-                    
+
                     if ($found == true)
                     {
                         if ($already_on == true)
@@ -348,7 +348,7 @@ class System extends module
                             }
                         }
                     }
-                    
+
                     if ($found == true)
                     {
                         if ($already_off == true)
@@ -374,12 +374,12 @@ class System extends module
         }
         else
         {
-            
+
             $bot->Event->setArgs("module");
             $bot->Commands->execute("help");
         }
     }
-    
+
     function c_quit($cmd, $bot)
     {
         $uptime = $bot->uptime();
@@ -404,16 +404,16 @@ class System extends module
         $bot->restart = true;
         $bot->input = false;
     }
-    
+
     function c_sudo($cmd, $bot)
     {
-        
+
         $bot->Event->setFrom($cmd->arg(0));
         $command = $cmd->arg(1);
         $bot->Event->setArgs(($args = $cmd->arg(2, true)) != -1 ? $args : null);
         $bot->Commands->execute($command);
     }
-    
+
     function c_autojoin($cmd, $bot)
     {
         $command = $cmd->arg(0);
@@ -473,13 +473,13 @@ class System extends module
             }
             else
             {
-                
+
                 $bot->Event->setArgs("autojoin");
                 $bot->Commands->execute("help");
             }
         }
     }
-    
+
     function c_trigger($cmd, $bot)
     {
         $command = $cmd->arg(0);
@@ -590,7 +590,7 @@ class System extends module
             $bot->saveConfig();
         }
     }
-    
+
     function c_e($cmd, $bot)
     {
         $bot->Console->msg("Evaluating code...");
@@ -628,13 +628,13 @@ class System extends module
         }
         $this->noerror = false;
     }
-    
+
     function c_r($cmd, $bot)
     {
         $cmd->args = 'return '.$cmd->args;
         $this->c_e($cmd, $bot);
     }
-    
+
     function c_alias($cmd, $bot)
     {
         if (($action = $cmd->arg(0)) != -1)
@@ -655,7 +655,7 @@ class System extends module
                                     break;
                                 }
                             }
-                            
+
                             if ($module == null)
                             {
                                 $bot->dAmn->say("$cmd->from: There is no \"$command\" command.", $cmd->ns);
@@ -684,7 +684,7 @@ class System extends module
                                 break;
                             }
                         }
-                        
+
                         if ($module == null)
                         {
                             $bot->dAmn->say("$cmd->from: \"$alias\" is not an alias.", $cmd->ns);
@@ -724,7 +724,7 @@ class System extends module
             break;
         case "del":
             if (($key = array_search($room, $bot->disabledRooms)) !== false)
-            {   
+            {
                 array_splice($bot->disabledRooms, $key, 1);
                 $bot->dAmn->say("$cmd->from: Commands are no longer disabled in <b>".$bot->dAmn->deform($room)."</b>.", $cmd->ns);
                 $bot->saveConfig();

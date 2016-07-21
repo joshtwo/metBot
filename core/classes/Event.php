@@ -12,7 +12,7 @@ class Event
     private $ns;
     private $from;
     private $args;
-    
+
     function __construct($bot)
     {
         $this->bot = $bot;
@@ -63,7 +63,7 @@ class Event
         return $match;
     }
 
-    // Hooks an event 
+    // Hooks an event
     function hook($func, $event, $priority=10)
     {
         if (!isset($this->evts[$event]))
@@ -78,7 +78,7 @@ class Event
     function unhook($func, $event, $priority=10)
     {
         if (isset($this->evts[$event]) && isset($this->evts[$event][$priority]))
-        {    
+        {
             if (($key = array_search($func, $this->evts[$event][$priority])) !== false)
             {
                 unset($this->evts[$event][$priority][$key]);
@@ -159,7 +159,7 @@ class Event
             }
         }
     }
-    
+
     function process()
     {
         if ($this->evts != null)
