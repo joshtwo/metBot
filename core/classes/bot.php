@@ -19,6 +19,8 @@ class bot
     // currently does nothing
     public $options;
     public $getOAuth;
+    // the config values loaded at startup
+    public $config;
 
     function __construct()
     {
@@ -67,6 +69,18 @@ class bot
             die("The config file \"$configFile\" does not exist.\n");
         eval($login);
         eval($user = @file_get_contents('./data/config/users.ini'));
+
+        $this->config = array();
+        $keys = array(
+            'username', 'password', 'admin', 'trigger', 'primaryTrigger',
+            'input', 'log', 'timestamp', 'token', 'cookie', 'colors',
+            'warnings', 'join', 'disabledRooms', 'noGuests', 'oauth'
+        );
+        // save the initial config values in case the user uses command-line
+        // options that clash with them
+        foreach($keys as $k)
+            $this->config[$k] = $$k;
+
         $this->username = $username;
         $this->password = $password;
         $this->admin = $admin;
@@ -112,36 +126,213 @@ class bot
         $this->OAuth->refreshToken = $oauth['refresh_token'];
     }
 
+    // the complicated part of this function is that you hvae to make sure that
+    // you don't save config values which were simply options given on the
+    // command line, but DO save them if the user changes them since they've
+    // given them
     function saveConfig($file=null)
     {
         if (!$file)
             $file = $this->configFile;
-        //$this->Console->msg("Saving config \"$file\"...");
-        // I shouldn't use this because if I configure a new user on startup
-        // then attempt to use the console msg functions, it'll complain that
-        // none of the color constants are defined. Better to just echo.
+
         echo "Saving config \"$file\"...\n";
-        // TODO: Seriously, rewrite this ASAP
+
         global $dir;
-        //echo "Current directory: $dir\nCurrent pk: {$this->pk}\n";
-        $contents = 
-        "\$username = '".$this->username."';\n\$password = '".$this->password."';\n\$admin = '".$this->admin."';\n\$trigger = ".var_export($this->trigger->triggers, true).";\n\$primaryTrigger = \"". $this->trigger->primaryTrigger ."\";\n\$input = ".($this->start_input == true? "true" : "false").";\n\$log = ".($this->log==true?"true":"false").";\n\$timestamp = '".$this->timestamp."';\n\$token = '".$this->pk."';\n\$cookie = ".var_export($this->cookie, true).";\n\$colors = ".($this->colors == true ? "true" : "false") .";\n\$warnings = ".($this->warnings == true ? "true" : "false").";";
-        $autojoin = "\n\$join = array(";
-        foreach($this->join as $j)
+
+        // config values
+        $values = array(
+            'username' => $this->username,
+            'password' => $this->password,
+            'admin' => $this->admin,
+            'trigger' => $this->trigger->triggers,
+            'primaryTrigger' => $this->trigger->primaryTrigger,
+            'input' => $this->start_input,
+            'log' => $this->log,
+            'timestamp' => $this->timestamp,
+            'token' => $this->pk,
+            'cookie' => $this->cookie,
+            'colors' => $this->colors,
+            'warnings' => $this->warnings,
+            'join' => $this->join,
+            'disabledRooms' => $this->disabledRooms,
+            'noGuests' => $this->noGuests,
+            'oauth' => array('access_token' => $this->OAuth->accessToken, 'refresh_token' => $this->OAuth->refreshToken)
+        );
+
+        $options =& $this->options;
+
+        // check to see if the user set any command-line options that override
+        // config values and if they've been modified since startup
+        if (($option = _or(@$options['o'], @$options['owner'])) == $values['admin'])
         {
-            $autojoin .= "\"$j\",\n";
+            echo "Skipping owner (set to \"$option\" on startup)\n";
+            unset($values['admin']);
         }
-        $autojoin .= ");\n";
-        $contents .= $autojoin;
-        $contents .= '$disabledRooms = '.($this->disabledRooms == null ? 'array()' : var_export($this->disabledRooms, true)) .';';
-        $contents .= "\n\$noGuests = " . ($this->noGuests ? "true" : "false") .';';
-        $contents .= "\n\$oauth = " . var_export(array('access_token' => $this->OAuth->accessToken, 'refresh_token' => $this->OAuth->refreshToken), true) . ";\n";
+        elseif ($option)
+        {
+            echo "Change in owner from command-line option \"$option\", saving...\n";
+            unset($options['o']);
+            unset($options['owner']);
+        }
+
+        if (($option = _or(@$options['t'], @$options['trigger'])))
+        {
+            $list = str_replace('\,', "\0", _or(@$options['trigger'], @$options['t']));
+            $list = explode(',', $option);
+            if ($list[0] == $values['primaryTrigger'])
+            {
+                echo "Skipping primary trigger (set to \"$list[0]\" on startup)\n";
+                unset($values['primaryTrigger']);
+            }
+            else
+            {
+                echo "Change in primary trigger from command-line option \"$list[0]\", saving...\n";
+                unset($options['t']);
+                unset($options['trigger']);
+            }
+            // escaped commas are turned to \0s
+            $triggers = array();
+            foreach($list as $t)
+                $triggers[str_replace("\0", ",", $t)] = array();
+            if (array_diff_key($triggers, $values['trigger']) === array()
+                && array_diff_key($values['trigger'], $triggers) === array()
+                && _or(@$options['t'], @$options['trigger']))
+                // if the primary trigger was changed, we need to save the trigger list anyway
+                // and we'll know it was because -t/--trigger was deleted in the above block
+            {
+                echo "Skipping list of triggers (unchanged since startup)\n";
+                unset($values['trigger']);
+            }
+            else
+            {
+                echo "Change in trigger from command-line option \"$option\", saving...\n";
+                unset($options['t']);
+                unset($options['trigger']);
+            }
+        }
+
+
+        if ((isset($options['i']) || isset($options['input'])))
+        {
+            if ($values['input'] === true)
+            {   
+                echo "Skipping input (set to \"on\" on startup)\n";
+                unset($values['input']);
+            }
+            else
+            {
+                echo "Change in input from command-line option \"on\", saving...\n";
+                unset($options['i']);
+                unset($options['input']);
+            }
+        }
+
+        if ((isset($options['I']) || isset($options['no-input'])))
+        {
+            if ($values['input'] === false)
+            {
+                echo "Skipping input (set to \"off\" on startup)\n";
+                unset($values['input']);
+            }
+            else
+            {
+                echo "Change in owner from command-line option \"off\", saving...\n";
+                unset($options['I']);
+                unset($options['no-input']);
+            }
+        }
+
+        if ((isset($options['l']) || isset($options['logging'])))
+        {
+            if ($values['log'] === true)
+            {
+                echo "Skipping logging (set to \"on\" on startup)\n";
+                unset($values['log']);
+            }
+            else
+            {
+                echo "Change in owner from command-line option \"on\", saving...\n";
+                unset($options['l']);
+                unset($options['logging']);
+            }
+        }
+
+        if ((isset($options['L']) || isset($options['no-logging'])))
+        {
+            if ($values['log'] === false)
+            {
+                echo "Skipping logging (set to \"off\" on startup)\n";
+                unset($values['log']);
+            }
+            else
+            {
+                echo "Change in logging from command-line option \"off\", saving...\n";
+                unset($options['L']);
+                unset($options['no-logging']);
+            }
+        }
+
+        $lower = function($list) {
+            for ($i = 0; $i < count($list); ++$i)
+                $list[$i] = strtolower($list[$i]);
+            return $list;
+        };
+
+        $format = function($list) use ($lower) {
+            $autojoin = explode(',', $list);
+            for ($i = 0; $i < count($autojoin); ++$i)
+                $autojoin[$i] = $this->dAmn->format($autojoin[$i]);
+            return $lower($autojoin);
+        };
+
+        if ($format($option = _or(@$options['j'], @$options['join'])) === $lower($values['join']))
+        {
+            echo "Skipping autojoin (no new rooms added since startup)\n";
+            unset($values['join']);
+        }
+        elseif ($option)
+        {
+            echo "Change in autojoin from command-line option \"$option\", saving...\n";
+            unset($options['j']);
+            unset($options['join']);
+        }
+
+        if (($option = _or(@$options['a'], @$options['add-autojoin'])) !== null
+            && array_merge($lower($this->config['join']), $format($option)) == $lower($values['join']))
+        {
+            echo "Skipping autojoin (no new rooms added since startup)\n";
+            unset($values['join']);
+        }
+        elseif ($option)
+        {
+            echo "Change in add-autojoin from command-line option \"$option\", saving...\n";
+            unset($options['a']);
+            unset($options['add-autojoin']);
+        }
+
+        // now, all values which the user have set with command-line arguments
+        // that haven't been changed since startup should be unset in the
+        // $values array
+        // all we have to do now is merge that up with the current config
+
+        // now to actually put it all together after this enormous amount of tedium
+        $fileContents = array();
+        $keys = array_keys($this->config);
+
+        foreach($keys as $k)
+        {
+            if (!isset($values[$k]))
+                $values[$k] = $this->config[$k];
+            $fileContents[] = '$' . $k . ' = ' . var_export($values[$k], true) . ';';
+        }
+        $fileContents = join("\n", $fileContents);
+
         if (!is_dir('./data'))
             mkdir('./data');
         if (!is_dir('./data/config'))
             mkdir('./data/config');
         $fp = fopen($dir.'./data/config/'.$file.'.ini', 'w');
-        fwrite($fp, $contents);
+        fwrite($fp, $fileContents);
         fclose($fp);
     }
 

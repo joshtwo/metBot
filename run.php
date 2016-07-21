@@ -18,10 +18,12 @@ function _debug($flag)
     return defined("METBOT_DEBUG_$flag");
 }
 
-$options = getopt('hc::u:iIlLqQj:a:D:', array(
+$options = getopt('hc::u:o:t:iIlLqQj:a:D:', array(
     'help',
     'config::',
     'user:',
+    'owner:',
+    'trigger:',
     'input',
     'no-input',
     'logging',
@@ -44,6 +46,9 @@ Options:
   -c, --config=USER   Set up a config file, optionally for USER if specified.
   -u, --user=USER     Run the bot with USER's config file.
   -o, --owner=USER    Set the owner of the bot to USER.
+  -t, --trigger=TRIGS Set the bot's trigger(s), a comma-separated list. If you
+                        want to use a comma in your trigger, type it as \, in
+                        the list. Ex -t !,\,,^ gives you ! , ^ as 3 triggers.
   -i, --input         Force input to be on.
   -I, --no-input      Force input to be off.
   -l, --logging       Force logging to be on.
@@ -53,9 +58,9 @@ Options:
                         on startup. This is useful when you run the bot on a
                         server and don't want it possibly freezing up because
                         something happened to the session.
-  -j, --autojoin=LIST  Set the autojoin list to LIST, a comma-separated list
-                         of chatrooms. You don't need to use # in the names.
-                         ex: {$argv[0]} -j Botdom,seniors,mychatroom
+  -j, --autojoin=LIST Set the autojoin list to LIST, a comma-separated list
+                        of chatrooms. You don't need to use # in the names.
+                        ex: {$argv[0]} -j Botdom,seniors,mychatroom
   -a, --add-autojoin=LIST  Add the comma-separated list LIST of rooms to the
                              bot's existing autojoin list.
   -D FLAGS            Enable the comma-separated list of debug flags FLAGS.
@@ -77,6 +82,15 @@ $bot = new bot();
 // in this current test release we're going to disable OAuth by
 // default as we only use it inside of the private release
 //$bot->getOAuth = false;
+
+// this allows us to check our command-line options list against the config
+// file we're loading so we can decide what to save and what not to save
+// if the user sets a config directive with a command-line argument and
+// does not change it during the course of running the bot
+// (such as adding a channel to the autojoin list after doing -a or -j)
+// then bot::saveConfig() will use the $join value that was in the config
+// at loading time. Otherwise it'll save the new value.
+$bot->options = $options;
 
 if (file_exists('./core/status/restart.bot'))
     unlink('./core/status/restart.bot');
@@ -110,6 +124,23 @@ if (isset($options['u']) || isset($options['user']))
 
 $bot->readConfig();
 
+if (isset($options['o']) || isset($options['owner']))
+{
+    $bot->admin = _or(@$options['owner'], @$options['o']);
+    $bot->Console->notice("Setting owner to {$bot->admin}!"); 
+}
+
+if (isset($options['t']) || isset($options['trigger']))
+{
+    // escaped commas are turned to \0s
+    $option = str_replace('\,', "\0", _or(@$options['trigger'], @$options['t']));
+    $option = explode(',', $option);
+    $triggers = array();
+    foreach($option as $t)
+        $triggers[str_replace("\0", ",", $t)] = array();
+    $bot->trigger = new Trigger($triggers, str_replace("\0", ',', $option[0]));
+}
+
 if (isset($options['i']) || isset($options['input']))
 {
     $bot->Console->notice("Input forced on!");
@@ -127,8 +158,8 @@ if (isset($options['l']) || isset($options['logging']))
 }
 if (isset($options['L']) || isset($options['no-logging']))
 {
-    $bot->Console->notice("Logging forced on!");
-    $bot->log = true;
+    $bot->Console->notice("Logging forced off!");
+    $bot->log = false;
 }
 if (isset($options['q']) || isset($options['oauth']))
 {
