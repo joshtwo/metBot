@@ -87,8 +87,6 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
                 $body = removeChunksFromBody($body);
             }
             $body = gzdecode($body);
-            //file_put_contents('request-log.txt', "-------------\nHEAD: <[$head]>\n\nBODY: <[$body]>\n\n------------\n", FILE_APPEND);
-            file_put_contents('request-log.txt', "-------------\nRESPONSE: <[$response]>\n\n------------\n", FILE_APPEND);
             if (_debug('HTTP'))
             {
                 echo "INCOMING HEAD:\n\n$head\n\n";
