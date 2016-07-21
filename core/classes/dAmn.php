@@ -976,7 +976,7 @@ class dAmn
         elseif (@$chat[0] == '@')
             return 'pchat:' . min($this->bot->username, $name) . ':' . max($this->bot->username, $name);
         else
-            return 'chat:' . $chat;
+            return 'chat:' . ($chat[0] == '#' ? $name : $chat);
     }
 }
 ?>
