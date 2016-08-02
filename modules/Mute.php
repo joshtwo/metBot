@@ -36,16 +36,17 @@ class Mute extends module
     // unmutes people when their time has expired
     function e_unmute($cmd, $bot)
     {
-        foreach ($this->channels as $ns => $list)
-        {
-            if (isset($list['users']))
-                foreach($list['users'] as $user => $time)
-                    if (time() - $time['start'] > $time['duration'])
-                    {
-                        $bot->dAmn->unban($user, $ns);
-                        unset($this->channels[$ns]['users'][$user]);
-                    }
-        }
+        if ($this->channels)
+            foreach ($this->channels as $ns => $list)
+            {
+                if (isset($list['users']))
+                    foreach($list['users'] as $user => $time)
+                        if (time() - $time['start'] > $time['duration'])
+                        {
+                            $bot->dAmn->unban($user, $ns);
+                            unset($this->channels[$ns]['users'][$user]);
+                        }
+            }
     }
 
     function c_mute($cmd, $bot)
