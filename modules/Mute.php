@@ -106,13 +106,13 @@ class Mute extends module
                     return;
                 }
                 $time = $timeSeconds;
-                $this->channels[$ns]['users'][$user] = array('start' => ($ts = time()), 'duration' => $time, 'reason' => $reason);
+                $this->channels[$ns]['users'][$user] = array('start' => ($ts = time()), 'duration' => $time);
                 // add to the history log
                 if (!isset($this->history[$user]))
                     $this->history[$user] = array();
                 if (!isset($this->history[$user][$ns]))
                     $this->history[$user][$ns] = array();
-                $this->history[$user][$ns][] = $this->channels[$ns]['users'][$user];
+                $this->history[$user][$ns][] = array('start' => $ts, 'duration' => $time, 'reason' => $reason, 'by' => $cmd->from);
 
                 $time = $bot->uptime($time, false);
                 $bot->dAmn->promote($user, $this->channels[$ns]['class'], $ns);
@@ -206,7 +206,8 @@ class Mute extends module
                 $msg[] = "Mutes in <b>" . $bot->dAmn->deform($ns) . "</b>:";
                 for($i = count($mutes); $i > 0; --$i)
                 {
-                    $msg[] = "- Muted on: " . date('M, d Y - H:i:s A', $mutes[$i-1]['start']);
+                    $msg[] = "- Muted by :dev" . $mutes[$i-1]['by'] . ":";
+                    $msg[] = "- Muted on: " . date('M, d Y - h:i:s A', $mutes[$i-1]['start']);
                     $msg[] = "- Duration: " . $bot->uptime($mutes[$i-1]['duration'], false);
                     $msg[] = "- Reason: " . ($mutes[$i-1]['reason'] ? $mutes[$i-1]['reason'] : '<i>none</i>');
                 }
@@ -215,13 +216,16 @@ class Mute extends module
         }
 
         $pages = array();
-        for ($i = 0; $i < count($userList); $i += $maxEntries)
-            if ($i == $page)
-                $pages[$i] = "<b>". ($i+1) . "</b>";
+        for ($i = 0; $i < count($keys); $i += $maxEntries)
+        {
+            $p = (floor(($i+1)/$maxEntries));
+            if ($p == $page)
+                $pages[$p] = "<b>".($p+1)."</b>";
             else
-                $pages[$i] = $i + 1;
+                $pages[$p] = $p+1;
+        }
 
-        if (count($userList) > 1)
+        if ($command != 'user')
             $msg[] = '<sub>Page: ' . join(" | ", $pages) . '</sub>';
 
         $msg = join("\n", $msg);
