@@ -14,9 +14,9 @@ class Mute extends module
 
     function main()
     {
-        $this->addCmd("mute", 75, "Mute somebody temporarily. All commands can optionally begin with the channel to operate on. Ex. <code>{trigger}mute #ThumbHub jerkoff98 2d Don't be a jerkoff</code>.<br><sub>Run {trigger}mute <i>user</i> <i>time</i> <i>reason</i> to mute <i>user</i> for <i>time</i> long with reason <i>reason</i>. The reason is optional.<br>Run {trigger}mute class to show the current privclass users are demoted to when muted.<br>Run {trigger}mute class <i>class</i> to set the muting privclass to <i>class</i>.");
-        $this->addCmd('unmute', 75, "Unmutes someone currently on the mute list. Used {trigger}unmute user. Can optionally give a channel to unmute in.");
-        $this->addCmd('mutelist', 75, "Shows the history of muted users.<br><sub>Use {trigger}mutelist to get the history of all users ever muted.<br>Use {trigger}mutelist <i>user</i> to get the history of a specific user.<br>Use {trigger}mutelist <i>page</i> to set the page of the list to <i>page</i>.");
+        $this->addCmd("mute", 50, "Mute somebody temporarily. All commands can optionally begin with the channel to operate on. Ex. <code>{trigger}mute #ThumbHub jerkoff98 2d Don't be a jerkoff</code>.<br><sub>Run {trigger}mute <i>user</i> <i>time</i> <i>reason</i> to mute <i>user</i> for <i>time</i> long with reason <i>reason</i>. The reason is optional.<br>Run {trigger}mute class to show the current privclass users are demoted to when muted.<br>Run {trigger}mute class <i>class</i> to set the muting privclass to <i>class</i>.");
+        $this->addCmd('unmute', 50, "Unmutes someone currently on the mute list. Used {trigger}unmute user. Can optionally give a channel to unmute in.");
+        $this->addCmd('mutelist', 50, "Shows the history of muted users.<br><sub>Use {trigger}mutelist to get the history of all users ever muted.<br>Use {trigger}mutelist <i>user</i> to get the history of a specific user.<br>Use {trigger}mutelist <i>page</i> to set the page of the list to <i>page</i>.");
         $this->hook('e_unmute', 'loop');
         $this->loadSettings();
     }
