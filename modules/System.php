@@ -478,6 +478,11 @@ class System extends module
                 $bot->Commands->execute("help");
             }
         }
+        else
+        {
+            $bot->Event->setArgs("autojoin");
+            $bot->Commands->execute("help");
+        }
     }
 
     function c_trigger($cmd, $bot)
