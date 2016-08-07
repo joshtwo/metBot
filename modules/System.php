@@ -216,7 +216,7 @@ class System extends module
             }
         }
         $txt .= join(', ', $a);
-        $txt .= "</b></sub>";
+        $txt .= "</sub>";
 
         $bot->dAmn->say("<abbr title=\"$cmd->from\"></abbr>$txt", $cmd->ns);
     }
