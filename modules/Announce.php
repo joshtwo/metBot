@@ -47,7 +47,7 @@ class Announce extends module
         case 'add':
             if (($interval = $cmd->arg(1)) != -1 && ($msg = $cmd->arg(2, true)) != -1)
             {
-                $interval = $this->stringToTime($interval);
+                $interval = $bot->stringToTime($interval);
                 $this->announcements[$target][] = array(
                     'interval' => $interval,
                     'msg' => $msg,
@@ -73,7 +73,7 @@ class Announce extends module
                     else
                     {
                         if ($attr == 'interval')
-                            $val = $this->stringToTime($val);
+                            $val = $bot->stringToTime($val);
                         $this->announcements[$target][$id][$attr] = $val;
                         $this->saveAnnouncements();
                         if ($attr == 'msg')
