@@ -48,7 +48,8 @@ class Autokick extends module
             $arg = $cmd->arg(1, true);
         }
         $ns = $bot->dAmn->format(strtolower($target));
-        if (!isset($this->autokicked[$ns])) $this->autokicked[$ns] = array('list'=>array(),'reason'=>'');
+        if (!isset($this->autokicked[$ns]))
+            $this->autokicked[$ns] = array('list'=>array(),'reason'=>'','switch'=>true);
         switch ($subCmd)
         {
         case 'add':
@@ -82,6 +83,7 @@ class Autokick extends module
             else
             {
                 $this->autokicked[$ns]['reason'] = $arg;
+                $this->save_list();
                 $bot->dAmn->say("$cmd->from: The reason \"<i>$arg</i>\" will be used to autokick people in $target.", $cmd->ns);
             }
         break;
@@ -94,6 +96,18 @@ class Autokick extends module
             }
             else $bot->dAmn->say("$cmd->from: There is no autokick list for $target.", $cmd->ns);
             break;
+        case 'on':
+        case 'off':
+            $switch = $subCmd == 'on';
+            if ($this->autokicked[$ns]['switch'] == $switch)
+                $bot->dAmn->say("$cmd->from: Autokicking in $target was already $subCmd.", $cmd->ns);
+            else
+            {
+                $this->autokicked[$ns]['switch'] = $switch;
+                $bot->dAmn->say("$cmd->from: Autokicking in $target is now <b>$subCmd</b>.", $cmd->ns);
+                $this->save_list();
+            }
+            break;
         default:
             $bot->dAmn->say("$cmd->from: You must specify if you want to add or delete a person from the list, or show the list.", $cmd->ns);
         }
@@ -102,7 +116,7 @@ class Autokick extends module
     function do_autokick($evt, $bot)
     {
         $ns = strtolower($evt->ns);
-        if (isset($this->autokicked[$ns]) && in_array($evt->from, $this->autokicked[$ns]['list']))
+        if (isset($this->autokicked[$ns]) && @$this->autokicked[$ns]['switch'] && in_array($evt->from, $this->autokicked[$ns]['list']))
             $bot->dAmn->kick($evt->from, $evt->ns, $this->autokicked[$ns]['reason']);
     }
 }
