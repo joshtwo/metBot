@@ -55,7 +55,7 @@ class Announce extends module
                 );
                 $this->saveAnnouncements();
                 $interval = $bot->uptime($interval, false);
-                $bot->dAmn->say("{$cmd->from}: The announcement <i>\"$msg\"</i> will be posted every <b>$interval</b> seconds in $chat.", $cmd->ns);
+                $bot->dAmn->say("{$cmd->from}: The announcement <i>\"$msg\"</i> will be posted every <b>$interval</b> in $chat.", $cmd->ns);
             }
             else
                 $bot->dAmn->say("{$cmd->from}: You must set ". ($interval == -1 ? "an interval" : "a message") . " for this announcement.", $cmd->ns);
