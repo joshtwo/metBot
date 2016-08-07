@@ -26,10 +26,6 @@ class Announce extends module
         foreach($rooms as $r)
         {
             $ids = array_keys($this->announcements[$r]);
-            foreach ($ids as $i)
-            {
-                $this->announcements[$r][$i]['time'] = time() + $i * 10;
-            }
         }
     }
 
@@ -51,12 +47,14 @@ class Announce extends module
         case 'add':
             if (($interval = $cmd->arg(1)) != -1 && ($msg = $cmd->arg(2, true)) != -1)
             {
+                $interval = $this->stringToTime($interval);
                 $this->announcements[$target][] = array(
                     'interval' => $interval,
                     'msg' => $msg,
                     'time' => time()
                 );
                 $this->saveAnnouncements();
+                $interval = $bot->uptime($interval, false);
                 $bot->dAmn->say("{$cmd->from}: The announcement <i>\"$msg\"</i> will be posted every <b>$interval</b> seconds in $chat.", $cmd->ns);
             }
             else
@@ -74,6 +72,8 @@ class Announce extends module
                         $bot->dAmn->say("{$cmd->from}: You didn't provide a value for \"$attr\".", $cmd->ns);
                     else
                     {
+                        if ($attr == 'interval')
+                            $val = $this->stringToTime($val);
                         $this->announcements[$target][$id][$attr] = $val;
                         $this->saveAnnouncements();
                         if ($attr == 'msg')

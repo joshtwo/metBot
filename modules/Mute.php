@@ -99,7 +99,7 @@ class Mute extends module
                     $reason = null; // empty reasons are possible
                 if (!isset($this->channels[$ns]['users']))
                     $this->channels[$ns]['users'] = array();
-                $timeSeconds = $this->stringToTime($time);
+                $timeSeconds = $bot->stringToTime($time);
                 if (!$timeSeconds)
                 {
                     $bot->dAmn->say("$cmd->from: Time string \"$time\" is invalid. The units of time are s, h, d and w (second, hour, day and week).", $cmd->ns);
@@ -230,28 +230,5 @@ class Mute extends module
 
         $msg = join("\n", $msg);
         $bot->dAmn->say('<abbr title="' . $cmd->from . '"></abbr>' . $msg, $cmd->ns);
-    }
-
-    // turns formatted time strings into seconds
-    function stringToTime($string)
-    {
-        $units = array(
-            's' => 1,
-            'm' => 60,
-            'h' => 60 * 60,
-            'd' => 60 * 60 * 24,
-            'w' => 60 * 60 * 24 * 7,
-        );
-
-        $string = explode(' ', $string);
-        $time = 0;
-
-        foreach($string as $s)
-        {
-            if ($unit = @$units[(substr($s, -1))])
-                $time += (float) (substr($s, 0, -1)) * $unit;
-            else return null;
-        }
-        return $time;
     }
 }
