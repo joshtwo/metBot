@@ -51,7 +51,7 @@ class Mute extends module
 
     function c_mute($cmd, $bot)
     {
-        $ns = $cmd->ns();
+        $ns = $bot->dAmn->format($cmd->ns());
         $channel = $bot->dAmn->deform($ns);
         if ($cmd->arg(0) == -1)
             $bot->dAmn->say("$cmd->from: You must give arguments to the command. Try {$bot->trigger}help mute.", $cmd->ns);
@@ -124,7 +124,7 @@ class Mute extends module
 
     function c_unmute($cmd, $bot)
     {
-        $ns = $cmd->ns();
+        $ns = $bot->dAmn->format($cmd->ns());
         $channel = $bot->dAmn->deform($ns);
         if (($user = $cmd->arg(0)) == -1)
             $bot->dAmn->say("$cmd->from: You must give a user to unmute.", $cmd->ns);
