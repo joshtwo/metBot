@@ -14,7 +14,7 @@ class Mute extends module
 
     function main()
     {
-        $this->addCmd("mute", 50, "Mute somebody temporarily. All commands can optionally begin with the channel to operate on. Ex. <code>{trigger}mute #ThumbHub jerkoff98 2d Don't be a jerkoff</code>.<br><sub>Run {trigger}mute <i>user</i> <i>time</i> <i>reason</i> to mute <i>user</i> for <i>time</i> long with reason <i>reason</i>. The reason is optional.<br>Run {trigger}mute class to show the current privclass users are demoted to when muted.<br>Run {trigger}mute class <i>class</i> to set the muting privclass to <i>class</i>.");
+        $this->addCmd("mute", 50, "Mute somebody temporarily. All commands can optionally begin with the channel to operate on. Ex. <code>{trigger}mute #ThumbHub jerkoff98 2d Don't be a jerkoff</code>.<br><sub>Run {trigger}mute <i>user</i> <i>time</i> <i>reason</i> to mute <i>user</i> for <i>time</i> long with reason <i>reason</i>. The reason is optional.<br>Run {trigger}mute class to show the current privclass users are demoted to when muted.<br>Run {trigger}mute class <i>class</i> to set the muting privclass to <i>class</i>.<br>Run {trigger}mute default <i>class</i> to set the unmuting privclass to <i>class</i>. When a user is unmuted, they will be put in this class. If one isn't set, the user will be unbanned (promoted to the room's Guests class).");
         $this->addCmd('unmute', 50, "Unmutes someone currently on the mute list. Used {trigger}unmute user. Can optionally give a channel to unmute in.");
         $this->addCmd('mutelist', 50, "Shows the history of muted users.<br><sub>Use {trigger}mutelist to get the history of all users ever muted.<br>Use {trigger}mutelist <i>user</i> to get the history of a specific user.<br>Use {trigger}mutelist <i>page</i> to set the page of the list to <i>page</i>.");
         $this->hook('e_unmute', 'loop');
@@ -43,7 +43,10 @@ class Mute extends module
                     foreach($list['users'] as $user => $time)
                         if (time() - $time['start'] > $time['duration'])
                         {
-                            $bot->dAmn->unban($user, $ns);
+                            if (!isset($list['default']))
+                                $bot->dAmn->unban($user, $ns);
+                            else
+                                $bot->dAmn->promote($user, $list['default'], $ns);
                             unset($this->channels[$ns]['users'][$user]);
                         }
             }
@@ -68,12 +71,27 @@ class Mute extends module
                 if (($class = @$this->channels[$ns]['class']))
                     $bot->dAmn->say("$cmd->from: Currently users are demoted to the class <b>$class</b> when muted.", $cmd->ns);
                 else
-                    $bot->dAmn->say("$cmd->from: No mute class is currently set. The module will not be able to mute in $channel until you set a room.", $cmd->ns);
+                    $bot->dAmn->say("$cmd->from: No mute class is currently set. The module will not be able to mute in $channel until you set a class.", $cmd->ns);
             }
             else
             {
                 $this->channels[$ns]['class'] = $class;
                 $bot->dAmn->say("$cmd->from: Users shall be demoted to class <b>$class</b> when muted.", $cmd->ns);
+                $this->saveSettings();
+            }
+            break;
+        case 'default':
+            if (($class = $cmd->arg(1)) == -1)
+            {
+                if (($class = @$this->channels[$ns]['default']))
+                    $bot->dAmn->say("$cmd->from: Currently users are promoted to the class <b>$class</b> when unmuted.", $cmd->ns);
+                else
+                    $bot->dAmn->say("$cmd->from: No default class is currently set. The module will unban users in $channel.", $cmd->ns);
+            }
+            else
+            {
+                $this->channels[$ns]['default'] = $class;
+                $bot->dAmn->say("$cmd->from: Users shall be promoted to class <b>$class</b> when unmuted.", $cmd->ns);
                 $this->saveSettings();
             }
             break;
