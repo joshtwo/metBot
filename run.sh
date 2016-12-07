@@ -11,7 +11,7 @@ ask_restart()
   done
   if [ $REPLY == "y" ]
   then
-    php run.php ${@:1}
+    php run.php "${@:1}"
   else
     echo "Bye!"
     exit
@@ -21,10 +21,10 @@ ask_restart()
 echo "metBot Beta 7"
 while :
 do
-  php run.php ${@:1} 
+  php run.php "${@:1}"
   if [ -f ./core/status/restart.bot ]
   then
-    php run.php ${@:1}
+    php run.php "${@:1}"
   else
     if [ -f ./core/status/close.bot ]
     then
