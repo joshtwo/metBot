@@ -14,8 +14,8 @@ class System extends module
         $this->addCmd('help', 0, "This gives you help on the commands that have help documentation. Used <b>{trigger}help <i>command</i></b>");
         $this->addCmd('module', 0, "This command shows info about the bot's modules.<sub><ul><li>Type <b>{trigger}module info <i>module</i></b> to get info on the module <i>module</i>.</li><li>Type <b>{trigger}module on/off <i>module</i></b> to turn the module <i>module</i> on and off.</li></ul></sub>");
         $this->addCmd('modules', 0, "This lists the modules in the bot.");
-        $this->addCmd('quit', 75, "This makes your bot quit dAmn.");
-        $this->addCmd('restart', 75, "This makes your bot restart completely.");
+        $this->addCmd('quit', 75, "This makes your bot quit dAmn. Can optionally pass the argument \"quiet\" to make it quit silently.");
+        $this->addCmd('restart', 75, "This makes your bot restart completely.<sub><ul><li>Type <b>{trigger}restart quiet</b> to make it quit silently.<li><li>Type <b>{trigger}restart <i>args</i><b> to restart the bot with the arguments <i>args</i> instead of the arguments given at startup. All subsequent restarts will also use these arguments unless you set new ones using this command.</li></ul></sub>");
         $this->addCmd('sudo', 100, "Does a command as another user. Used <b>{trigger}sudo <i>person</i> <i>command</i> <i>arguments</i></b>. Ex: <code>{trigger}sudo Noobobob123 away Noobob is away</code> would run as if Noobob123 said <code>{trigger}away Noobob is away</code>.");
         $this->addCmd('autojoin', 75, "Manage the list of autojoined channels.<sub><ul><li>Use <b>{trigger}autojoin list</b> to show the list of autojoined channels.</li><li>Use <b>{trigger}autojoin add <i>channel</i></b> to add #<i>channel</i> to the bot's autojoin list.</li><li>Use <b>{trigger}autojoin del <i>channel</i></b> to remove #<i>channel</i> from the bot's autojoin list.</li></ul></sub>");
         $this->addCmd('trigger', 50, "Changes the bot's trigger. {trigger}trigger add/del <i>trigger</i> [<i>room</i>] | {trigger}trigger set <i>primaryTrigger</i>");
@@ -383,7 +383,13 @@ class System extends module
     function c_quit($cmd, $bot)
     {
         $uptime = $bot->uptime();
-        $bot->dAmn->say("$cmd->from: Quitting. Uptime: $uptime", $cmd->ns);
+        if ($cmd->arg(0) == -1)
+            $bot->dAmn->say("$cmd->from: Quitting. Uptime: $uptime", $cmd->ns);
+        elseif ($cmd->arg(0) != "quiet")
+        {
+            $bot->dAmn->say("$cmd->from: Unknown argument. Command is {$bot->trigger}quit or {$bot->trigger}quit quiet.", $cmd->ns);
+            return;
+        }
         $fp = fopen('./core/status/close.bot', 'w');
         fclose($fp);
         // TODO: Shouldn't have to send this raw. Make a dAmn::quit()
@@ -395,9 +401,19 @@ class System extends module
     function c_restart($cmd, $bot)
     {
         $uptime = $bot->uptime();
-        $bot->dAmn->say("$cmd->from: Restarting. Uptime: $uptime", $cmd->ns);
-        $fp = fopen('./core/status/restart.bot', 'w');
-        fclose($fp);
+        if ($cmd->arg(0) == -1)
+            $bot->dAmn->say("$cmd->from: Quitting. Uptime: $uptime", $cmd->ns);
+        elseif ($cmd->arg(0) != "quiet")
+        {
+            //$bot->dAmn->say("$cmd->from: Unknown argument. Command is {$bot->trigger}quit or {$bot->trigger}quit quiet.", $cmd->ns);
+            //return;
+            file_put_contents('./core/status/restart.bot', $cmd->args);
+        }
+        else
+        {
+            $fp = fopen('./core/status/restart.bot', 'w');
+            fclose($fp);
+        }
         $bot->dAmn->send("disconnect\n\0");
         $bot->Console->msg("Restarting bot...");
         $bot->quit = true;

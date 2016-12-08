@@ -30,6 +30,9 @@ class bot
         $this->Event = new Event($this);
         $this->Console = new Console($this);
         $this->OAuth = new OAuth($this);
+
+        // user agent to send when logging in
+        $this->agent = $this->name . ' ' . $this->version;
     }
 
     // a variant of send_headers that uses and recycles the dA cookies

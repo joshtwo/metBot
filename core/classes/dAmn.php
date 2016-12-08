@@ -753,7 +753,7 @@ class dAmn
         }
 
         if (!$agent)
-            $agent = $this->bot->name . ' ' . $this->bot->version;
+            $agent = $this->bot->agent;
         $data = "dAmnClient 0.2\nagent=$agent\n\0";
         #$channel = $this->deform($this->bot->join[0]);
         #$data="dAmnClient 0.2\nagent=dAmn WebClient 0.7.pre-1 - dAmn Flash plugin 1.2\nbrowser=$agent\nurl=http://chat.deviantart.com/chat/$channel\n\0";

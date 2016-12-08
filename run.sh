@@ -11,7 +11,7 @@ ask_restart()
   done
   if [ $REPLY == "y" ]
   then
-    php run.php "${@:1}"
+    $NEWARGS && php run.php "${NEWARGS[@]}" || php run.php "${@:1}"
   else
     echo "Bye!"
     exit
@@ -19,18 +19,28 @@ ask_restart()
 }
 
 echo "metBot Beta 7"
+php run.php "${@:1}"
 while :
 do
-  php run.php "${@:1}"
   if [ -f ./core/status/restart.bot ]
   then
-    php run.php "${@:1}"
+    # see if there are new args in the restart
+    if [ -s ./core/status/restart.bot ]
+    then
+      echo Using new arguments `cat ./core/status/restart.bot`
+      eval 'NEWARGS=('`cat ./core/status/restart.bot`')'
+      php run.php "${NEWARGS[@]}"
+    else
+      echo Restart file empty, using old arguments...
+      $NEWARGS && php run.php "${$NEWARGS[@]}" || php run.php "${@:1}"
+    fi
   else
     if [ -f ./core/status/close.bot ]
     then
       echo "Bye!"
       exit
-    else
+    else # in case PHP crashes, we need to fix the STDIN handle
+      php -r 'stream_set_blocking(STDIN, true);'
       ask_restart
     fi
   fi

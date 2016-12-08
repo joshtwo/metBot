@@ -18,12 +18,24 @@ function _debug($flag)
     return defined("METBOT_DEBUG_$flag");
 }
 
-$options = getopt('hc::u:o:t:iIlLqQj:a:D:', array(
+if (file_exists('./core/status/restart.bot'))
+{
+    // 
+    unlink('./core/status/restart.bot');
+}
+if (file_exists('./core/status/close.bot'))
+    unlink('./core/status/close.bot');
+
+
+
+$options = getopt('hc::u:o:t:a:b:iIlLqQj:a:D:', array(
     'help',
     'config::',
     'user:',
     'owner:',
     'trigger:',
+    'agent:',
+    'browser:',
     'input',
     'no-input',
     'logging',
@@ -49,6 +61,9 @@ Options:
   -t, --trigger=TRIGS Set the bot's trigger(s), a comma-separated list. If you
                         want to use a comma in your trigger, type it as \, in
                         the list. Ex -t !,\,,^ gives you ! , ^ as 3 triggers.
+  -A, --agent=AGENT   Send the string AGENT as the bot's user agent on login.
+  -b, --browser=AGENT Set the browser user agent. Automatically sets the user-
+                        agent to imitate the deviantART chat.
   -i, --input         Force input to be on.
   -I, --no-input      Force input to be off.
   -l, --logging       Force logging to be on.
@@ -91,11 +106,6 @@ $bot = new bot();
 // then bot::saveConfig() will use the $join value that was in the config
 // at loading time. Otherwise it'll save the new value.
 $bot->options = $options;
-
-if (file_exists('./core/status/restart.bot'))
-    unlink('./core/status/restart.bot');
-if (file_exists('./core/status/close.bot'))
-    unlink('./core/status/close.bot');
 
 if (isset($options['D']))
 {
@@ -199,6 +209,26 @@ if (isset($options['j']) ||
     $msg .= join(', ', $autojoin);
 
     $bot->Console->notice($msg);
+}
+
+if (isset($options['b']) || isset($options['browser']))
+{
+    $bot->agent = "dAmn WebClient 0.7.pre-1 - dAmn Flash plugin 1.2\nbrowser=" . ($browser = _or(@$options['b'], @$options['browser']));
+    $bot->agent .= "\nurl=http://chat.deviantart.com/chat/" . substr($bot->dAmn->deform($bot->join[0]), 1);
+    switch (PHP_OS)
+    {
+    case 'Linux':
+        $bot->agent .= "\nflash_runtime=Linux 4.8.11-1-ARCH - LNX 11,2,202,644";
+        break;
+    }
+
+    $bot->Console->notice("Set browser agent to \"{$browser}\"!");
+}
+
+if (isset($options['A']) || isset($options['agent']))
+{
+    $bot->agent = _or(@$options['A'], @$options['agent']);
+    $bot->Console->notice("Setting the user agent to {$bot->agent}!");
 }
 
 $bot->Modules->load('./modules/');
@@ -327,9 +357,7 @@ function run(&$bot)
                     $bot->Console->notice("Successfully OAuth authenticated!");
             }
         }
-        //$agent = "Mozilla/5.0 (X11; Linux i686; rv:38.0) Gecko/20100101 Firefox/38.0";
-        $agent = null;
-        $error = $bot->dAmn->login($bot->username, $bot->pk, $agent);
+        $error = $bot->dAmn->login($bot->username, $bot->pk);
         handleLogin($bot, $error);
     }
     stream_set_blocking($bot->dAmn->s, false);
@@ -362,6 +390,7 @@ function run(&$bot)
             $bot->Console->notice("Input is now on.");
             // I run dAmn::packetLoop() in dAmn::input()
             $bot->dAmn->input();
+            stream_set_blocking(STDIN, true);
             $bot->Console->notice("Input is now off.");
             $bot->input = false;
         }
