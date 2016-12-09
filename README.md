@@ -37,6 +37,7 @@ These last two options DO NOT WORK ON WINDOWS unless you use an alternative Unix
 ## Command-line arguments
 Several options and actions can be accessed by giving the start-up script command-line arguments. Note that as of right now, options which you specify this way may end up saved in the config file the bot is using.
 ```
+metBot Beta 7
 Usage: run.php [OPTION]...
 Runs metBot, the one and only.
 
@@ -48,6 +49,9 @@ Options:
   -t, --trigger=TRIGS Set the bot's trigger(s), a comma-separated list. If you
                         want to use a comma in your trigger, type it as \, in
                         the list. Ex -t !,\,,^ gives you ! , ^ as 3 triggers.
+  -A, --agent=AGENT   Send the string AGENT as the bot's user agent on login.
+  -b, --browser=AGENT Set the browser user agent. Automatically sets the user-
+                        agent to imitate the deviantART chat.
   -i, --input         Force input to be on.
   -I, --no-input      Force input to be off.
   -l, --logging       Force logging to be on.
@@ -72,6 +76,7 @@ the bot will start configuring by default.
 Check out <http://github.com/joshtwo/metBot> for more details, set-up
 instructions and further documentation.
 ```
+
 # Advanced users
 You may not care about this stuff unless you're a little more ambitious.
 
