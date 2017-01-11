@@ -384,7 +384,9 @@ class System extends module
     {
         $uptime = $bot->uptime();
         if ($cmd->arg(0) == -1)
+        {
             $bot->dAmn->say("$cmd->from: Quitting. Uptime: $uptime", $cmd->ns);
+        }
         elseif ($cmd->arg(0) != "quiet")
         {
             $bot->dAmn->say("$cmd->from: Unknown argument. Command is {$bot->trigger}quit or {$bot->trigger}quit quiet.", $cmd->ns);
@@ -402,7 +404,11 @@ class System extends module
     {
         $uptime = $bot->uptime();
         if ($cmd->arg(0) == -1)
-            $bot->dAmn->say("$cmd->from: Quitting. Uptime: $uptime", $cmd->ns);
+        {
+            $bot->dAmn->say("$cmd->from: Restarting. Uptime: $uptime", $cmd->ns);
+            $fp = fopen('./core/status/restart.bot', 'w');
+            fclose($fp);
+        }
         elseif ($cmd->arg(0) != "quiet")
         {
             //$bot->dAmn->say("$cmd->from: Unknown argument. Command is {$bot->trigger}quit or {$bot->trigger}quit quiet.", $cmd->ns);
