@@ -32,7 +32,7 @@ do
       php run.php "${NEWARGS[@]}"
     else
       echo Restart file empty, using old arguments...
-      $NEWARGS && php run.php "${$NEWARGS[@]}" || php run.php "${@:1}"
+      $NEWARGS && php run.php "${NEWARGS[@]}" || php run.php "${@:1}"
     fi
   else
     if [ -f ./core/status/close.bot ]
