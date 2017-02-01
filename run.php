@@ -28,7 +28,7 @@ if (file_exists('./core/status/close.bot'))
 
 
 
-$options = getopt('hc::u:o:t:a:b:iIlLqQj:a:D:', array(
+$options = getopt('hc::u:o:t:a:b:iIlLqQj:A:D:', array(
     'help',
     'config::',
     'user:',
@@ -218,8 +218,18 @@ if (isset($options['b']) || isset($options['browser']))
     switch (PHP_OS)
     {
     case 'Linux':
-        $bot->agent .= "\nflash_runtime=Linux 4.8.11-1-ARCH - LNX 11,2,202,644";
+        $bot->agent .= "\nflash_runtime=Linux ".php_uname('r')." - LNX 11,2,202,644";
         break;
+    case 'Windows':
+        $version = array(
+            '10' => '10',
+            '6.2' => '8.1',
+            '6.1' => '8',
+            '6' => '7',
+        );
+        // why bother emulating anything older?
+        $version = _or(@$version[php_uname('r')], 'Vista');
+        $bot->agent .= "\nflash_runtime=Windows $version - WIN 22,0,0,0";
     }
 
     $bot->Console->notice("Set browser agent to \"{$browser}\"!");
