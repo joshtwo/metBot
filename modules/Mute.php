@@ -128,6 +128,11 @@ class Mute extends module
                 // add to the history log
                 if (!isset($this->history[$user]))
                     $this->history[$user] = array();
+                else {
+                    $entry = $this->history[$user];
+                    unset($this->history[$user]);
+                    $this->history[$user] = $entry;
+                }
                 if (!isset($this->history[$user][$ns]))
                     $this->history[$user][$ns] = array();
                 $this->history[$user][$ns][] = array('start' => $ts, 'duration' => $time, 'reason' => $reason, 'by' => $cmd->from);
@@ -181,7 +186,6 @@ class Mute extends module
         if ($command == 'user' && $user != -1)
         {
             if (!(
-                isset($this->history) &&
                 isset($this->history) &&
                 isset($this->history[$user])
             ))
