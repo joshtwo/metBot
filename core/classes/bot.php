@@ -554,7 +554,7 @@ class Trigger
     function add($trigger, $room=null)
     {
         if ($room)
-            if (is_array($this->triggers[$trigger]))
+            if (is_array(@$this->triggers[$trigger]))
                 $this->triggers[$trigger][] = $room;
             else
                 $this->triggers[$trigger] = array($room);
