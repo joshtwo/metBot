@@ -486,7 +486,7 @@ class dAmnCmds extends module
                             if ($mem['pc'] == $p)
                             {
                                 $a[] = $mem['symbol']."<b></b>".$name[0]."<b></b>".substr($name, 1).
-                                       (isset($mem['count'])? "[".$mem['count']."]" : '');
+                                       (isset($mem['count'])? "[".($mem['count']+1)."]" : '');
                             }
                         }
                         $txt .= join(', ', $a)."<br>";
@@ -498,7 +498,7 @@ class dAmnCmds extends module
                     foreach($members as $name => $mem)
                     {
                         $a[] = $mem['symbol']."<b></b>".$name[0]."<b></b>".substr($name, 1).
-                               (isset($mem['count'])? "[".$mem['count']."]" : '');
+                               (isset($mem['count'])? "[".($mem['count']+1)."]" : '');
                     }
                     $txt .= join('<br>', $a);
                 }

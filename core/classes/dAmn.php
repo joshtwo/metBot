@@ -474,6 +474,8 @@ class dAmn
                         $this->bot->Console->notice($from." has joined", $chat);
                         if (!isset($this->info[$ns]['members'][$from]))
                             $this->info[$ns]['members'][$from] = new Packet($packet->body->body);
+                        else
+                            $this->info[$ns]['members'][$from]['count'] = $this->info[$ns]['members'][$from]['count'] + 1;
                     break;
 
                     case 'part':
@@ -484,7 +486,10 @@ class dAmn
 
                         $this->bot->Console->notice($packet->body->param.' has left ['.$packet->body['r'].']', $chat);
                         $this->bot->Event->setFrom($from = $packet->body->param);
-                        unset($this->info[$ns]['members'][$from]);
+                        if ($this->info[$ns]['members'][$from]['count'])
+                            $this->info[$ns]['members'][$from]['count'] = $this->info[$ns]['members'][$from]['count'] - 1;
+                        else
+                            unset($this->info[$ns]['members'][$from]);
                     break;
 
                     case 'privchg':
@@ -497,7 +502,7 @@ class dAmn
                     case 'kicked':
                         $this->bot->Event->setFrom($from = $packet->body['by']);
                         $this->bot->Console->notice($packet->body->param." has been kicked by ".$from."* ".NORM.$packet->body->body, $chat);
-                        unset($this->info[$ns]['members'][$from]);
+                        unset($this->info[$ns]['members'][$packet->body->param]);
                     break;
 
                     case 'admin':
@@ -613,6 +618,9 @@ class dAmn
                             $member = new Packet($member);
                             if (!isset($this->info[$ns]['members'][$member->param]))
                                 $this->info[$ns]['members'][$member->param] = $member;
+                            else
+                                $this->info[$ns]['members'][$member->param]['count'] =
+                                  $this->info[$ns]['members'][$member->param]['count'] + 1;
                         }
                         $chat = $this->deform($ns);
                         $this->bot->Console->notice("Got members for $chat");
