@@ -237,7 +237,7 @@ class dAmnCmds extends module
 
     function c_joined($cmd, $bot)
     {
-        $joined = '';
+        $joined = array();
         foreach ($bot->dAmn->joined as $key => $j)
         {
             if ($key != count($bot->dAmn->joined) - 1)
