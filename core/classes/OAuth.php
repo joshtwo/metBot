@@ -223,7 +223,7 @@ class OAuth
         else
         {
             if (@$response->error)
-                $this->bot->Console->error("Error refreshing token: {$response->error}");
+                $this->bot->Console->warn("Error refreshing token: {$response->error}");
             return false;
         }
     }
