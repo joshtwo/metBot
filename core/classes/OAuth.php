@@ -158,27 +158,10 @@ class OAuth
         if (($pos = strpos($response, "\r\n\r\n")) !== false)
         {
             $body = substr($response, $pos + 4);
-            if (strpos($response, "Transfer-Encoding: chunked\r\n") !== false) // this is safe
-            {
-                echo "Found chunked response...\n";
-                $result = '';
-                $num = null;
-                $previous = null;
-                while ($num !== 0)
-                {
-                    $pos = strpos($body, "\r\n");
-                    if ($pos === false)
-                        break;
-                    $num = substr($body, 0, $pos);
-                    $num = hexdec($num);
-                    if (!$num)
-                        break;
-                    $result .= substr($body, $pos+2, $num);
-                    $body = substr($body, $pos + 2 + $num + 2);
-                }
-                return json_decode($result);
-            }
-            return json_decode($body);
+            $json = json_decode($body);
+            if ($json == null && json_last_error() != JSON_ERROR_NONE)
+                $this->bot->Console->warn("Error trying to decode the JSON: ".json_last_error_msg());
+            return $json;
         }
         else
             return false;
