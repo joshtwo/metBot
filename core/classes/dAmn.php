@@ -2,6 +2,7 @@
 
 function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=array(), $bytes=null)
 {
+    global $printIt;
     if (!$socket)
         return "";
     try
@@ -40,6 +41,9 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
         $response = "";
         if (_debug('HTTP'))
             echo "OUTGOING:\n\n$headers\n\n";
+
+        if ($printIt)
+            echo "SOCKET INPUT:\n$headers\n--------\n";
         fputs($socket, $headers);
         while (!feof ($socket)) $response .= fgets ($socket, 8192);
 
@@ -92,6 +96,8 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
                 echo "INCOMING HEAD:\n\n$head\n\n";
                 echo "INCOMING BODY DECODED:\n\n" . substr($body, 0, 200) . "\n\n";
             }
+            if ($printIt)
+                echo "SOCKET OUTPUT:\nHead: $head\n\nBody: $body\n--------\n";
             return $head . "\r\n\r\n" . $body;
 
         }
