@@ -486,7 +486,7 @@ class System extends module
             }
             elseif ($command == "list")
             {
-                $chans = '';
+                $chans = array();
                 foreach ($bot->join as $j)
                 {
                     $chans[]= $bot->dAmn->deform($j);
