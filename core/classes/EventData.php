@@ -68,7 +68,7 @@ class EventData
             $end = strlen($this->args);
         else
         {
-            $end = strpos($args, $sep, $start + strlen($sep));
+            $end = @strpos($args, $sep, $start + strlen($sep));
             if ($end === false)
                 $end = strlen($args);
         }
@@ -84,7 +84,7 @@ class EventData
         $indices = list($start, $end) = $this->find($pos, $last, $sep);
         if ($start === null) return -1;
         // remove quotes if they're there and this isn't the last argument
-        if (!$last && $this->args[$start] == '"' && $this->args[$end - 1] == '"')
+        if (!$last && @$this->args[$start] == '"' && @$this->args[$end - 1] == '"')
             return substr($this->args, $start + 1, $end - $start - 2);
         else
             return substr($this->args, $start, $end - $start);
