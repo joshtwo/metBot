@@ -48,6 +48,7 @@ class Mute extends module
                             else
                                 $bot->dAmn->promote($user, $list['default'], $ns);
                             unset($this->channels[$ns]['users'][$user]);
+                            $this->saveSettings();
                         }
             }
     }
