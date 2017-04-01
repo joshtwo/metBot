@@ -138,7 +138,9 @@ class Announce extends module
             foreach ($this->announcements as $ns => $list)
             {
                 foreach($list as $id => $announcement)
-                    if (time() - $announcement['time'] > $announcement['interval'])
+                    if ($announcement['time'] == 0)
+                        $this->anouncements[$ns][$id]['time'] = time();
+                    elseif (time() - $announcement['time'] > $announcement['interval'])
                     {
                         $devs = array();
                         $bot->dAmn->say(($devs ? "<abbr title=\"$devs\"></abbr>" : "") . ":noes::megaphone: {$announcement['msg']}", $ns);
