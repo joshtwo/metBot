@@ -1,3 +1,6 @@
 data/config
 data/logs
+console/status
 bot-errors.log
+*.swp
+*.swo
