@@ -47,7 +47,7 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
         fputs($socket, $headers);
         while (!feof ($socket)) $response .= fgets ($socket, 8192);
 
-        if (strpos($response, "Content-Encoding: gzip\r\n") !== false)
+        if (stripos($response, "Content-Encoding: gzip\r\n") !== false)
         {
             // if it has a content encoding, I think it pretty much must have a body
             if ($pos = strpos($response, "\r\n\r\n"))
@@ -58,7 +58,7 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
             }
             else // they don't send the HTTP body with 2 CRFLs at the start, so we use Content-Length to manually slice it out
             {
-                $start = strpos($response, "Content-Length: ");
+                $start = stripos($response, "Content-Length: ");
                 if ($start === false)
                 {
                     echo "No content length. Checking for gzip header...\n";
@@ -86,11 +86,13 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
                     $body = substr($response, 0 - $contentLength);
                 }
             }
-            if (strpos($response, "Transfer-Encoding: chunked\r\n") !== false)
+            if (stripos($response, "Transfer-Encoding: chunked\r\n") !== false)
             {
                 $body = removeChunksFromBody($body);
             }
-            $body = gzdecode($body);
+            $newBody = gzdecode($body);
+            if ($newBody)
+                $body = $newBody;
             if (_debug('HTTP'))
             {
                 echo "INCOMING HEAD:\n\n$head\n\n";
@@ -122,7 +124,7 @@ function collect_cookies($response)
     $cookies = array();
     foreach (explode("\r\n", $response) as $line)
     {
-        if (strpos($line, "Set-Cookie: ") === 0)
+        if (stripos($line, "Set-Cookie: ") === 0)
         {
             $eq = strpos($line, '=');
             $cookies[substr($line, 12, $eq - 12)] = substr($line, $eq + 1, strpos($line, '; ') - ($eq + 1));
@@ -710,7 +712,7 @@ class dAmn
             $this->bot->Console->warn("Couldn't perform login; no response from dA. Using last retrieved authtoken...");
             return array('token' => $this->bot->oldpk, 'cookie' => $this->bot->oldcookie);
         }
-        if (strpos($response, "Location: https://www.deviantart.com/users/wrong-password") !== false)
+        if (stripos($response, "Location: https://www.deviantart.com/users/wrong-password") !== false)
         {
             $this->bot->Console->warn("Wrong password!");
             return array();
@@ -721,7 +723,7 @@ class dAmn
             $this->bot->Console->warn("Couldn't retrieve the authtoken. Please check your username and password.");
             return array();
         }
-        if (($socket = @fsockopen("chat.deviantart.com", 80)) == false)
+        if (($socket = @fsockopen("ssl://chat.deviantart.com", 443)) == false)
         {
             $this->bot->Console->warn("Failed to connect to chatrooms to get authtoken.\n");
             return array();
@@ -730,7 +732,7 @@ class dAmn
             $socket,
             "chat.deviantart.com",
             "/chat/Botdom",
-            "https://chat.deviantart.com",
+            "https://chat.deviantart.com/",
             null,
             $cookies
         );
