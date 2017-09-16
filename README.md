@@ -29,10 +29,10 @@ These last two options DO NOT WORK ON WINDOWS unless you use an alternative Unix
 * Console input - If enabled, you can talk through the console window as your bot, and run its commands as the administrator. See section "Console Input" for more info. Note: This DOES NOT WORK ON WINDOWS due to PHP being unable to do non-blocking reads from standard input in the Command Prompt.
 
 ## Some useful commands
-!help <command name> - Gives you help on any command on the bot. Use this. Love and cherish this, like Snow White would a small, adorable woodland creature. Example: !help commands
-!commands - Shows you all the commands you have access to on the bot.
-!join <channel> - Make your bot join another channel. Example: !join #Botdom
-!user - Manages your bot's user list. This determines who has privileges for what commands. Ex: !user add MyFriend 50 would make the deviantART user MyFriend an Operator on your bot. Also try !users (shows the bot's user list) and !level/!levels (manages/lists the bot's privilege levels).
+* !help <command name> - Gives you help on any command on the bot. Use this. Love and cherish this, like Snow White would a small, adorable woodland creature. Example: !help commands
+* !commands - Shows you all the commands you have access to on the bot.
+* !join <channel> - Make your bot join another channel. Example: !join #Botdom
+* !user - Manages your bot's user list. This determines who has privileges for what commands. Ex: !user add MyFriend 50 would make the deviantART user MyFriend an Operator on your bot. Also try !users (shows the bot's user list) and !level/!levels (manages/lists the bot's privilege levels).
 
 ## Command-line arguments
 Several options and actions can be accessed by giving the start-up script command-line arguments. Note that as of right now, options which you specify this way may end up saved in the config file the bot is using.
