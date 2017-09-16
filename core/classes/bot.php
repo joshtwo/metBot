@@ -162,6 +162,8 @@ class bot
             'oauth' => array('access_token' => $this->OAuth->accessToken, 'refresh_token' => $this->OAuth->refreshToken)
         );
 
+        $keys = array_keys($values);
+
         $options =& $this->options;
 
         // check to see if the user set any command-line options that override
@@ -320,7 +322,6 @@ class bot
 
         // now to actually put it all together after this enormous amount of tedium
         $fileContents = array();
-        $keys = array_keys($this->config);
 
         foreach($keys as $k)
         {

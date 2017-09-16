@@ -117,7 +117,7 @@ if (isset($options['c'])
     || isset($options['config'])
     || ($noConfigFile = !file_exists('./data/config/login.ini')))
 {
-    if (!$noConfigFile)
+    if (@!$noConfigFile)
     {
         $bot->config($user = _or(@$options['config'], @$options['c']));
         $answer = $bot->Console->get("Do you want to connect as $user? [y/n]");
