@@ -710,7 +710,7 @@ class dAmn
             $this->bot->Console->warn("Couldn't perform login; no response from dA. Using last retrieved authtoken...");
             return array('token' => $this->bot->oldpk, 'cookie' => $this->bot->oldcookie);
         }
-        if (strpos($response, "Location: http://www.deviantart.com/users/wrong-password") !== false)
+        if (strpos($response, "Location: https://www.deviantart.com/users/wrong-password") !== false)
         {
             $this->bot->Console->warn("Wrong password!");
             return array();
@@ -730,11 +730,12 @@ class dAmn
             $socket,
             "chat.deviantart.com",
             "/chat/Botdom",
-            "http://chat.deviantart.com",
+            "https://chat.deviantart.com",
             null,
             $cookies
         );
         unset($cookies['features']);
+        file_put_contents("chat-page.txt", $response);
         if (($pos = strpos($response, "dAmn_Login( ")) !== false)
         {
             $response = substr($response, $pos+12);
