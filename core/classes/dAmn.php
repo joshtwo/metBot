@@ -52,7 +52,7 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
             // if it has a content encoding, I think it pretty much must have a body
             if ($pos = strpos($response, "\r\n\r\n"))
             {
-                echo "Found CRLF pair...\n";
+                echo "Found CRLF pair at $pos...\n";
                 $head = substr($response, 0, $pos);
                 $body = substr($response, $pos + 4);
             }
@@ -745,7 +745,7 @@ class dAmn
         }
         else
         {
-            $this->bot->Console->warn("Couldn't find authtoken!");
+            $this->bot->Console->warn("Couldn't find authtoken in chat page!");
             return array(
                 'cookie' => $cookies
             );
