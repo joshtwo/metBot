@@ -392,6 +392,8 @@ class System extends module
             $bot->dAmn->say("$cmd->from: Unknown argument. Command is {$bot->trigger}quit or {$bot->trigger}quit quiet.", $cmd->ns);
             return;
         }
+        if (!is_dir('./core/status'))
+            mkdir('./core/status');
         $fp = fopen('./core/status/close.bot', 'w');
         fclose($fp);
         // TODO: Shouldn't have to send this raw. Make a dAmn::quit()
@@ -403,6 +405,8 @@ class System extends module
     function c_restart($cmd, $bot)
     {
         $uptime = $bot->uptime();
+        if (!is_dir('./core/status'))
+            mkdir('./core/status');
         if ($cmd->arg(0) == -1)
         {
             $bot->dAmn->say("$cmd->from: Restarting. Uptime: $uptime", $cmd->ns);
