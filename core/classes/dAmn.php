@@ -737,7 +737,6 @@ class dAmn
             $cookies
         );
         unset($cookies['features']);
-        file_put_contents("chat-page.txt", $response);
         if (($pos = strpos($response, "dAmn_Login( ")) !== false)
         {
             $response = substr($response, $pos+12);
