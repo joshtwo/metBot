@@ -96,7 +96,7 @@ require_once('./core/core.php');
 $bot = new bot();
 // in this current test release we're going to disable OAuth by
 // default as we only use it inside of the private release
-//$bot->getOAuth = false;
+$bot->getOAuth = false;
 
 // this allows us to check our command-line options list against the config
 // file we're loading so we can decide what to save and what not to save
