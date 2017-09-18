@@ -30,7 +30,7 @@ class System extends module
     function c_about($cmd, $bot)
     {
         $uptime = $bot->uptime();
-        $bot->dAmn->say("<abbr title=\"$cmd->from\"></abbr>Hello! I'm running <b><a href=\"http://www.botdom.com/wiki/". $bot->name ."\" title=\"". $bot->name." ".$bot->version."\">".$bot->name ." ". $bot->version."</a></b> by <b>:devdeviant-garde:</b>. My owner is <b>:dev". $bot->admin .":</b>. I've been up for $uptime.", $cmd->ns);
+        $bot->dAmn->say("<abbr title=\"$cmd->from\"></abbr>Hello! I'm running <b><a href=\"http://github.com/joshtwo/metBot\" title=\"". $bot->name." ".$bot->version."\">".$bot->name ." ". $bot->version."</a></b> by <b>:devdeviant-garde:</b>. My owner is <b>:dev". $bot->admin .":</b>. I've been up for $uptime.", $cmd->ns);
     }
 
     function c_commands($cmd, $bot)
