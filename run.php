@@ -286,6 +286,7 @@ function handleLogin(&$bot, $error, $skip_retry=false, $retries=1)
             $bot->Console->warn(($skip_retry ? "Failed to log in with old authtoken." : "Failed to log in with old authtoken, retrieving new authtoken...") . NORM, null);
             if (!$skip_retry)
             {
+                $bot->cookie = array();
                 $array = $bot->dAmn->getAuthtoken($bot->username, $bot->password);
                 if (isset($array['token']) && isset($array['cookie']))
                 {
