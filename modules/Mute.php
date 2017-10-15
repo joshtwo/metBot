@@ -59,7 +59,7 @@ class Mute extends module
         $channel = $bot->dAmn->deform($ns);
         if ($cmd->arg(0) == -1)
             $bot->dAmn->say("$cmd->from: You must give arguments to the command. Try {$bot->trigger}help mute.", $cmd->ns);
-        else 
+        else
         switch($cmd->arg(0))
         {
         case 'list':
@@ -208,7 +208,7 @@ class Mute extends module
             for ($i = 0; $i < $maxEntries && $i + $page*$maxEntries < count($keys); ++$i)
                 $userList[] = $keys[$i + $page*$maxEntries];
         }
-        
+
         if (!$userList)
         {
             if ($page != 0)

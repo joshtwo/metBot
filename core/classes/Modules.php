@@ -4,7 +4,7 @@ class Modules
 {
     public $mods = array();
     private $bot;
-    
+
     function __construct($bot)
     {
         $this->bot = $bot;

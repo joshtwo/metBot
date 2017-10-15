@@ -20,7 +20,7 @@ function _debug($flag)
 
 if (file_exists('./core/status/restart.bot'))
 {
-    // 
+    //
     unlink('./core/status/restart.bot');
 }
 if (file_exists('./core/status/close.bot'))

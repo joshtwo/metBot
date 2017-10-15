@@ -20,7 +20,7 @@ class module
     // encapsulation boilerplate
     function getSysName() { return $this->sysname; }
     //function setSysName($sysname) { $this->sysname = $sysname; }
-    
+
     function getName() { return $this->name; }
     //function setName($name) { $this->name = $name; }
 
@@ -49,12 +49,12 @@ class module
     {
         $this->commands[$command] = new command($privs, $help);
     }
-    
+
     final function hasCmd($command)
     {
         return (is_array($this->commands) && in_array($command, array_keys($this->commands)));
     }
-    
+
     final function hook($func, $event, $priority=10)
     {
         if (is_string($func))
@@ -63,7 +63,7 @@ class module
             throw Exception('Must use a callable or the name of a member function to hook to a class.');
         $this->Event->hook($func, $event, $priority);
     }
-    
+
     final function unhook($func, $event, $priority=10)
     {
         if (is_string($func))
@@ -72,7 +72,7 @@ class module
             throw Exception('Must use a callable or the name of a member function to hook to a class.');
         $this->Event->unhook($func, $event, $priority);
     }
-    
+
     final function setMethod($command, $method)
     {
         if (isset($this->commands[$command]))
@@ -81,13 +81,13 @@ class module
         }
         else return false;
     }
-        
+
 
     function main()
     {
         throw new Exception(get_class($this).": module does not define its own 'main' method");
     }
-    
+
     final function save($data, $filename)
     {
         is_dir("./data/module") || mkdir("./data/module");
@@ -100,7 +100,7 @@ class module
         fclose($f);
         return true;
     }
-    
+
     final function load(&$var, $filename)
     {
         //if (!file_exists("./data/module/".get_class($this)."/$filename.json"))
@@ -110,7 +110,7 @@ class module
         if (!$var) return false;
         else return true;
     }
-    
+
     final function alias($cmd, $alias)
     {
         if (isset($this->commands[$cmd]))
@@ -123,7 +123,7 @@ class module
         }
         else return false;
     }
-    
+
     final function removeAlias($alias)
     {
         if ($this->commands && isset($this->commands[$alias]) && $this->commands[$alias]->alias)
@@ -133,7 +133,7 @@ class module
         }
         else return false;
     }
-    
+
     final function hasAlias($alias)
     {
         return $this->commands && in_array($alias, array_keys($this->commands)) && $this->commands[$alias]->alias;

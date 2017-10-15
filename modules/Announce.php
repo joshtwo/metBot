@@ -88,7 +88,7 @@ class Announce extends module
                             $attr = 'privclass';
                             $val = "<b>$val</b>";
                         }
-                        $bot->dAmn->say("{$cmd->from}: The <b>$attr</b> for announcement <b>#$id</b> in $chat has been set to $val.", $cmd->ns); 
+                        $bot->dAmn->say("{$cmd->from}: The <b>$attr</b> for announcement <b>#$id</b> in $chat has been set to $val.", $cmd->ns);
                     }
             }
             break;

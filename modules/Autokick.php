@@ -18,7 +18,7 @@ class Autokick extends module
         );
         $help = '';
         foreach($list as $cmd => $desc)
-            $help .= "<li><b>{trigger}autokick $cmd</b> $desc.</li>";  
+            $help .= "<li><b>{trigger}autokick $cmd</b> $desc.</li>";
         $this->addCmd('autokick', 75, "This command allows you to kick someone every time they join.<sub><ul>$help</ul></sub>");
         $this->load_list();
     }
