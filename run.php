@@ -262,12 +262,11 @@ if (!$bot->pk)
     $bot->quit = true;
 }
 
-function handleLogin(&$bot, $error, $skip_retry=false, $retries=1)
+function handleLogin(&$bot, $login_error, $skip_retry=false, $retries=1)
 {
-    $retry_error = 1;
     if (_debug('SKIP_RETRY'))
         $skip_retry = true;
-    switch ($error)
+    switch ($login_error)
     {
         case 1:
             $bot->Console->notice("Logged in to dAmn successfully!");
@@ -294,11 +293,11 @@ function handleLogin(&$bot, $error, $skip_retry=false, $retries=1)
                     $bot->cookie = $array['cookie'];
                     $bot->savePk = true;
                 }
-                $retry_error = $bot->dAmn->login($bot->username, $bot->pk);
+                $login_error = $bot->dAmn->login($bot->username, $bot->pk);
             }
             else
             {
-                echo "Giving up... retry error: $retry_error\n";
+                echo "Giving up... retry error: $login_error\n";
             }
         break;
         case 3:
@@ -315,18 +314,18 @@ function handleLogin(&$bot, $error, $skip_retry=false, $retries=1)
             $wait = (int) log(pow($retries, $retries));
             echo "Sleeping for $wait seconds...\n";
             sleep($wait);
-            $retry_error = $bot->dAmn->login($bot->username, $bot->pk);
-            handleLogin($bot, $retry_error, false, ++$retries);
+            $login_error = $bot->dAmn->login($bot->username, $bot->pk);
+            handleLogin($bot, $login_error, false, ++$retries);
         break;
         default:
-            $bot->Console->warn("I'm not sure what's going on here! Error #$retry_error");
+            $bot->Console->warn("I'm not sure what's going on here! Error #$login_error");
             exit();
         break;
     }
 
-    if ($retry_error != 1 && !$skip_retry)
+    if ($login_error != 1 && !$skip_retry)
     {
-        handleLogin($bot, $retry_error, true);
+        handleLogin($bot, $login_error, true);
         $bot->saveConfig();
     }
 }
