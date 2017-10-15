@@ -18,11 +18,9 @@ function _debug($flag)
     return defined("METBOT_DEBUG_$flag");
 }
 
+// Get rid of status files
 if (file_exists('./core/status/restart.bot'))
-{
-    //
     unlink('./core/status/restart.bot');
-}
 if (file_exists('./core/status/close.bot'))
     unlink('./core/status/close.bot');
 
@@ -322,10 +320,12 @@ function handleLogin(&$bot, $login_error, $skip_retry=false, $retries=1)
         break;
     }
 
-    if ($login_error != 1 && !$skip_retry)
+    if ($login_error !== 1 && !$skip_retry)
     {
-        handleLogin($bot, $login_error, true);
+        return handleLogin($bot, $login_error, true);
     }
+
+    return $login_error === 1;
 }
 
 function run(&$bot)
@@ -368,7 +368,13 @@ function run(&$bot)
             }
         }
         $login_error = $bot->dAmn->login($bot->username, $bot->pk);
-        handleLogin($bot, $login_error);
+        $success = handleLogin($bot, $login_error);
+
+        if (!$success)
+        {
+            $bot->Console->notice("Quitting due to login failure...");
+            $bot->quit = true;
+        }
     }
     stream_set_blocking($bot->dAmn->s, false);
 
