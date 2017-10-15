@@ -319,7 +319,7 @@ function handleLogin(&$bot, $login_error, $skip_retry=false, $retries=1)
         break;
         default:
             $bot->Console->warn("I'm not sure what's going on here! Error #$login_error");
-            exit();
+            $skip_retry = true;
         break;
     }
 
