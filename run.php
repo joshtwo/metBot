@@ -260,64 +260,63 @@ function handleLogin(&$bot, $login_error, $skip_retry=false, $retries=1)
 {
     if (_debug('SKIP_RETRY'))
         $skip_retry = true;
-    switch ($login_error)
+    do
     {
-        case 1:
-            $bot->Console->notice("Logged in to dAmn successfully!");
-            foreach($bot->join as $j)
-            {
-                $bot->dAmn->join($j);
-                $bot->dAmn->packetLoop();
-            }
-        break;
-        case 2:
-            $bot->Console->warn(($skip_retry ? "Failed to log in with old authtoken." : "Failed to log in with old authtoken, retrieving new authtoken...") . NORM, null);
-            if (!$skip_retry)
-            {
-                $bot->cookie = array();
-                $array = $bot->dAmn->getAuthtoken($bot->username, $bot->password);
-                if (isset($array['token']))
+        switch ($login_error)
+        {
+            case 1:
+                $bot->Console->notice("Logged in to dAmn successfully!");
+                foreach($bot->join as $j)
                 {
-                    $bot->pk = $array['token'];
-                    $bot->cookie = $array['cookie'];
-                    $bot->Console->notice("Saving new authtoken...");
-                    $bot->saveConfig();
+                    $bot->dAmn->join($j);
+                    $bot->dAmn->packetLoop();
                 }
+            break;
+            case 2:
+                $bot->Console->warn(($skip_retry ? "Failed to log in with old authtoken." : "Failed to log in with old authtoken, retrieving new authtoken...") . NORM, null);
+                if (!$skip_retry)
+                {
+                    $bot->cookie = array();
+                    $array = $bot->dAmn->getAuthtoken($bot->username, $bot->password);
+                    if (isset($array['token']))
+                    {
+                        $bot->pk = $array['token'];
+                        $bot->cookie = $array['cookie'];
+                        $bot->Console->notice("Saving new authtoken...");
+                        $bot->saveConfig();
+                    }
+                    $login_error = $bot->dAmn->login($bot->username, $bot->pk);
+                }
+                else
+                {
+                    echo "Giving up... retry error: $login_error\n";
+                }
+            break;
+            case 3:
+                $bot->Console->warn("Uh oh, looks like you're banned from dAmn!");
+                $skip_retry = true;
+            break;
+            case 4:
+                if ($retries > 50)
+                {
+                    $bot->Console->warn("Look, we've tried this 50 god damn times in a row. Let's start with clean slate.");
+                    $retries = 1;
+                }
+                else
+                    $bot->Console->warn("Failed to connect to dAmn... let's try again!");
+                $wait = (int) log(pow($retries, $retries));
+                echo "Sleeping for $wait seconds...\n";
+                sleep($wait);
                 $login_error = $bot->dAmn->login($bot->username, $bot->pk);
-            }
-            else
-            {
-                echo "Giving up... retry error: $login_error\n";
-            }
-        break;
-        case 3:
-            $bot->Console->warn("Uh oh, looks like you're banned from dAmn!");
-            $skip_retry = true;
-        break;
-        case 4:
-            if ($retries > 50)
-            {
-                $bot->Console->warn("Look, we've tried this 50 god damn times in a row. Let's start with clean slate.");
-                $retries = 1;
-            }
-            else
-                $bot->Console->warn("Failed to connect to dAmn... let's try again!");
-            $wait = (int) log(pow($retries, $retries));
-            echo "Sleeping for $wait seconds...\n";
-            sleep($wait);
-            $login_error = $bot->dAmn->login($bot->username, $bot->pk);
-            handleLogin($bot, $login_error, false, ++$retries);
-        break;
-        default:
-            $bot->Console->warn("I'm not sure what's going on here! Error #$login_error");
-            $skip_retry = true;
-        break;
+                ++$retries;
+            break;
+            default:
+                $bot->Console->warn("I'm not sure what's going on here! Error #$login_error");
+                $skip_retry = true;
+            break;
+        }
     }
-
-    if ($login_error !== 1 && !$skip_retry)
-    {
-        return handleLogin($bot, $login_error, true);
-    }
+    while ($login_error !== 1 && !$skip_retry);
 
     return $login_error === 1;
 }
