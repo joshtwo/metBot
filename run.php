@@ -324,7 +324,6 @@ function handleLogin(&$bot, $login_error, $skip_retry=false, $retries=1)
     if ($login_error != 1 && !$skip_retry)
     {
         handleLogin($bot, $login_error, true);
-        $bot->saveConfig();
     }
 }
 
