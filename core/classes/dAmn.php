@@ -729,7 +729,7 @@ class dAmn
         $cookies=collect_cookies($response);
         if ($cookies==array())
         {
-            $this->bot->Console->warn("Couldn't retrieve the authtoken. Please check your username and password.");
+            $this->bot->Console->warn("Couldn't retrieve the authtoken.");
             return array();
         }
         if (($socket = @fsockopen("ssl://chat.deviantart.com", 443)) == false)
