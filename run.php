@@ -370,7 +370,7 @@ function run(&$bot)
             }
         }
         $login_error = $bot->dAmn->login($bot->username, $bot->pk);
-        handleLogin($bot, $kogin_error);
+        handleLogin($bot, $login_error);
     }
     stream_set_blocking($bot->dAmn->s, false);
 
