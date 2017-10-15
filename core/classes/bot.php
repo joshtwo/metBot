@@ -54,7 +54,7 @@ class bot
                 echo "Saving new cookies...\n";
                 $this->saveConfig();
             }
-            else
+            else if (_debug('HTTP') || _debug('HTTP_QUIET'))
             {
                 echo "No auth cookie given by $url. Cookies:\n";
                 print_r($newCookies);

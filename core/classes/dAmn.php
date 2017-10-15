@@ -52,7 +52,8 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
             // if it has a content encoding, I think it pretty much must have a body
             if ($pos = strpos($response, "\r\n\r\n"))
             {
-                echo "Found CRLF pair at $pos...\n";
+                if (_debug('HTTP') || _debug('HTTP_QUIET'))
+                    echo "Found CRLF pair at $pos...\n";
                 $head = substr($response, 0, $pos);
                 $body = substr($response, $pos + 4);
             }
@@ -155,7 +156,8 @@ function cookie_string($cookies)
 
 function removeChunksFromBody($body)
 {
-    echo "Found chunked response...\n";
+    if (_debug('HTTP') || _debug('HTTP_QUIET'))
+        echo "Found chunked response...\n";
     $result = '';
     $num = null;
     $previous = null;
