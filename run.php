@@ -369,8 +369,8 @@ function run(&$bot)
                     $bot->Console->notice("Successfully OAuth authenticated!");
             }
         }
-        $error = $bot->dAmn->login($bot->username, $bot->pk);
-        handleLogin($bot, $error);
+        $login_error = $bot->dAmn->login($bot->username, $bot->pk);
+        handleLogin($bot, $kogin_error);
     }
     stream_set_blocking($bot->dAmn->s, false);
 
