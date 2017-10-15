@@ -367,6 +367,9 @@ function run(&$bot)
                     $bot->Console->notice("Successfully OAuth authenticated!");
             }
         }
+        if (_debug('QUIT_AFTER_OAUTH'))
+            die("Finished with OAuth.\n");
+
         $login_error = $bot->dAmn->login($bot->username, $bot->pk);
         $success = handleLogin($bot, $login_error);
 
