@@ -300,6 +300,7 @@ function handleLogin(&$bot, $login_error, $skip_retry=false, $retries=1)
         break;
         case 3:
             $bot->Console->warn("Uh oh, looks like you're banned from dAmn!");
+            $skip_retry = true;
         break;
         case 4:
             if ($retries > 50)
