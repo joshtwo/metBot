@@ -56,20 +56,26 @@ class bot
             }
             else
             {
-                echo "No auth cookie. Cookies:";
+                echo "No auth cookie given by $url. Cookies:\n";
                 print_r($newCookies);
             }
         }
         return $result;
     }
 
-    // TOOD: better error checking here
+    // returns true on success, false on failure
     function readConfig($configFile=null)
     {
         if ($configFile == null) $configFile = $this->configFile;
+        echo "Reading config file \"$configFile.ini\"...\n";
         $login = @file_get_contents("./data/config/$configFile.ini");
+
         if (!$login)
-            die("The config file \"$configFile\" does not exist.\n");
+        {
+            echo "Failed to read config file.";
+            return false;
+        }
+
         eval($login);
         eval($user = @file_get_contents('./data/config/users.ini'));
 
@@ -127,6 +133,8 @@ class bot
         $this->noGuests = $noGuests ? $noGuests : array();
         $this->OAuth->accessToken = $oauth['access_token'];
         $this->OAuth->refreshToken = $oauth['refresh_token'];
+
+        return true;
     }
 
     // the complicated part of this function is that you hvae to make sure that
@@ -461,7 +469,7 @@ class bot
         }
     }
 
-    function config($file="login")
+    function config($file=null)
     {
         if (!$file)
         {
@@ -473,12 +481,13 @@ class bot
             {
                 if($argv[$i] == '-c' || $argv[$i] == '--config')
                 {
+                    // make sure the next argument isn't an option itself
                     if (isset($argv[$i + 1]) && $argv[$i + 1][0] != '-')
                         $file = $argv[$i + 1];
                 }
             }
             if (!$file)
-                $file = 'login';
+                $file = $this->configFile;
         }
         echo "Configuring \"$file.ini\"...\n";
         echo "Please enter the following information:\n";

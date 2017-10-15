@@ -114,25 +114,23 @@ if (isset($options['D']))
 }
 
 if (isset($options['c'])
-    || isset($options['config'])
-    || ($noConfigFile = !file_exists('./data/config/login.ini')))
+    || isset($options['config']))
 {
-    if (@!$noConfigFile)
-    {
-        $bot->config($user = _or(@$options['config'], @$options['c']));
-        $answer = $bot->Console->get("Do you want to connect as $user? [y/n]");
-        if ($answer == "y" || $answer == "Y")
-            $bot->configFile = $user;
-        else exit(); // quit after setting up new config file
-    }
-    else
-        $bot->config();
+    $bot->config($user = _or(@$options['config'], @$options['c']));
+    $answer = $bot->Console->get("Do you want to connect as $user? [y/n]");
+    if ($answer == "y" || $answer == "Y")
+        $bot->configFile = $user;
+    else exit(); // quit after setting up new config file
 }
 
 if (isset($options['u']) || isset($options['user']))
     $bot->configFile = _or(@$options['user'], @$options['u']);
 
-$bot->readConfig();
+if (!$bot->readConfig())
+{
+    $bot->config();
+    $bot->readConfig();
+}
 
 if (isset($options['o']) || isset($options['owner']))
 {
