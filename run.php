@@ -79,9 +79,8 @@ Options:
   -D FLAGS            Enable the comma-separated list of debug flags FLAGS.
 
 Note that the "off" options override the "on" options (ex. -I supercedes -i),
-and that -j/--autojoin overrides -a/--add-autojoin. If a login.ini config
-file does not exist and you have not used -u/--user to pick a different file,
-the bot will start configuring by default.
+and that -j/--autojoin overrides -a/--add-autojoin. If a config file for the
+selected user does not exist, the bot will start configuring it by default.
 
 Check out <http://github.com/joshtwo/metBot> for more details, set-up
 instructions and further documentation.
