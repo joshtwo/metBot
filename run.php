@@ -265,6 +265,8 @@ if (!$bot->pk)
 function handleLogin(&$bot, $error, $skip_retry=false, $retries=1)
 {
     $retry_error = 1;
+    if (_debug('SKIP_RETRY'))
+        $skip_retry = true;
     switch ($error)
     {
         case 1:
@@ -295,7 +297,7 @@ function handleLogin(&$bot, $error, $skip_retry=false, $retries=1)
             }
             else
             {
-                echo "Giving up...\n";
+                echo "Giving up... retry error: $retry_error\n";
             }
         break;
         case 3:

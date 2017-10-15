@@ -107,7 +107,14 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
         {
             echo "We didn't get back a compressed response, oddly enough.\n";
             if (_debug('HTTP'))
+            {
                 echo "INCOMING:\n\n" . substr($response, 0, 300) . "\n\n";
+                if (_debug('COMPRESSED_ONLY'))
+                {
+                    echo "ENTIRE RESPONSE:\n\n$response\n\n";
+                    die("Received uncompressed response.\n");
+                }
+            }
             return $response;
         }
     }
