@@ -793,8 +793,8 @@ class dAmn
         $this->send($data);
         $response = $this->recv();
         $this->process($response);
-        $response = new Packet($response);
-        switch ($response['e'])
+        $pkt = new Packet($response);
+        switch ($pkt['e'])
         {
             case 'ok':
                 return 1;
@@ -806,6 +806,7 @@ class dAmn
                 return 3;
             break;
             default:
+                $this->bot->Console->warn("Unrecognized response during login attempt: {$response}");
                 return -1;
             break;
         }
