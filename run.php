@@ -239,7 +239,6 @@ if (isset($options['A']) || isset($options['agent']))
 $bot->Modules->load('./modules/');
 if (!$bot->pk)
 {
-    $bot->savePk = true;
     $array = $bot->dAmn->getAuthtoken($bot->username, $bot->password);
     if (isset($array['token']) && isset($array['cookie']))
     {
@@ -270,11 +269,6 @@ function handleLogin(&$bot, $login_error, $skip_retry=false, $retries=1)
                 $bot->dAmn->join($j);
                 $bot->dAmn->packetLoop();
             }
-            if ($bot->savePk)
-            {
-                $bot->Console->notice("Saving new authtoken...");
-                $bot->saveConfig();
-            }
         break;
         case 2:
             $bot->Console->warn(($skip_retry ? "Failed to log in with old authtoken." : "Failed to log in with old authtoken, retrieving new authtoken...") . NORM, null);
@@ -282,11 +276,12 @@ function handleLogin(&$bot, $login_error, $skip_retry=false, $retries=1)
             {
                 $bot->cookie = array();
                 $array = $bot->dAmn->getAuthtoken($bot->username, $bot->password);
-                if (isset($array['token']) && isset($array['cookie']))
+                if (isset($array['token']))
                 {
                     $bot->pk = $array['token'];
                     $bot->cookie = $array['cookie'];
-                    $bot->savePk = true;
+                    $bot->Console->notice("Saving new authtoken...");
+                    $bot->saveConfig();
                 }
                 $login_error = $bot->dAmn->login($bot->username, $bot->pk);
             }

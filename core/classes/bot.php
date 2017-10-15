@@ -11,7 +11,6 @@ class bot
     public $input = null;
     public $start_input = true;
     public $configFile = 'login';
-    public $savePk = false;
     public $disabledRooms = array();
     public $noGuests = false;
     public $levels;
@@ -517,8 +516,6 @@ class bot
         }
         $this->pk = '';
         $this->cookie = array();
-        $this->oldpk = '';
-        $this->oldcookie = array();
         $this->levels = array();
         $this->saveConfig($file);
     }
