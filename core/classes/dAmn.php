@@ -768,7 +768,7 @@ class dAmn
         {
             $this->bot->Console->warn("Failed to connect to dAmn.");
             $this->bot->disconnected = true;
-            return 3;
+            return 4;
         }
         else
         {
