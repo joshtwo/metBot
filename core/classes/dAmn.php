@@ -704,8 +704,8 @@ class dAmn
 
         if (($socket = @fsockopen("ssl://www.deviantart.com", 443)) == false)
         {
-            $this->bot->Console->warn("Couldn't open socket to deviantart.com. Using last retrieved authtoken...");
-            return array('token' => $this->bot->pk, 'cookie' => $this->bot->cookie);
+            $this->bot->Console->warn("Couldn't open socket to deviantart.com.");
+            return array();
         }
         $response = send_headers(
             $socket,
@@ -718,8 +718,8 @@ class dAmn
         fclose($socket);
         if (!$response)
         {
-            $this->bot->Console->warn("Couldn't perform login; no response from dA. Using last retrieved authtoken...");
-            return array('token' => $this->bot->oldpk, 'cookie' => $this->bot->oldcookie);
+            $this->bot->Console->warn("Couldn't perform login; no response from dA.");
+            array();
         }
         if (stripos($response, "Location: https://www.deviantart.com/users/wrong-password") !== false)
         {
