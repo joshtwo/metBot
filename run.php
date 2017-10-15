@@ -1,5 +1,4 @@
 <?php
-// try the STDERR shit
 ini_set('display_errors', 'On');
 ini_set('error_log', './bot-errors.log');
 ini_set('default_socket_timeout', 15);
@@ -302,8 +301,6 @@ function handleLogin(&$bot, $login_error, $skip_retry=false, $retries=1)
                     $bot->Console->warn("Look, we've tried this 50 god damn times in a row. Let's start with clean slate.");
                     $retries = 1;
                 }
-                else
-                    $bot->Console->warn("Failed to connect to dAmn... let's try again!");
                 $wait = (int) log(pow($retries, $retries));
                 echo "Sleeping for $wait seconds...\n";
                 sleep($wait);
