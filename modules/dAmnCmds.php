@@ -9,7 +9,7 @@ class dAmnCmds extends module
     public $pipe = array();
     public $admin_chan = null;
     public $whoisQueue = array();
-    
+
     function main()
     {
         $this->addCmd('away', 0, "This sets an away message for yourself. When people try to talk to you and you have an away message set, the bot replies by telling the person who was trying to talk to you that you are away and tells them your away message. Used <b>{trigger}away <i>message</i></b>.");
@@ -42,7 +42,7 @@ class dAmnCmds extends module
         $this->hook('err_whois', 'get');
         //$this->hook('fuckThisBitch', 'recv_join');
     }
-    
+
     function away($evt, $bot)
     {
         $to = substr($evt->pkt->body->body, 0, strpos($evt->pkt->body->body, ':'));
@@ -54,7 +54,7 @@ class dAmnCmds extends module
             }
         }
     }
-    
+
     /*
     function fuckThisBitch($evt, $bot)
     {
@@ -170,7 +170,7 @@ class dAmnCmds extends module
     {
         $chat = $cmd->ns();
         $person = $cmd->arg(0);
-        
+
         if ($person != -1)
             $bot->dAmn->ban($person, $chat);
         else
@@ -183,7 +183,7 @@ class dAmnCmds extends module
     {
         $chat = $cmd->ns();
         $person = $cmd->arg(0);
-        
+
         if ($person != -1)
             $bot->dAmn->unban($person, $chat);
         else
@@ -191,7 +191,7 @@ class dAmnCmds extends module
             $bot->dAmn->say("$cmd->from: Who do you want to ban?", $cmd->ns);
         }
     }
-    
+
     function c_kban($cmd, $bot)
     {
         $chat = $cmd->ns();
@@ -199,7 +199,7 @@ class dAmnCmds extends module
         $reason = $cmd->arg(1, true);
         if ($reason == -1)
             $reason = null;
-        
+
         if ($person != -1)
         {
             if (!isset($chat))
@@ -221,7 +221,7 @@ class dAmnCmds extends module
         $reason = $cmd->arg(1, true);
         if ($reason == -1)
             $reason = null;
-        
+
         if ($person != -1)
         {
             if (!isset($chat))
@@ -266,7 +266,7 @@ class dAmnCmds extends module
             $chan1 = $cmd->arg(0);
             $chan2 = $cmd->arg(1);
         }
-        
+
         if (isset($person))
         {
             if ($person != "stop")
@@ -317,7 +317,7 @@ class dAmnCmds extends module
             }
         }
     }
-    
+
     function pipe($evt, $bot)
     {
         $pipes = $this->pipe;
@@ -355,7 +355,7 @@ class dAmnCmds extends module
     }
 
     // you need this:
-    // $this>hook('e_whois', 'property', $cmd); 
+    // $this>hook('e_whois', 'property', $cmd);
     // $this>hook('e_whois', 'get', $cmd);
     //
     // if I had the ability to pass parameters this would be easier
@@ -367,7 +367,7 @@ class dAmnCmds extends module
         $bot->dAmn->get("info", "login:$person");
         array_push($this->whoisQueue, array($person, $cmd));
     }
-        
+
     function say_whois($evt, $bot)
     {
         if ($evt->pkt['p'] != 'info') return; // wrong packet
@@ -382,12 +382,12 @@ class dAmnCmds extends module
             array_unshift($this->whoisQueue, array($person, $cmd));
             return;
         }
-        
+
         $msg = "<b>:dev$person:</b><br>".
                ":icon$person:<br><ul>".
                "<li>".$login['info']['realname']."</li></ul>";
                //"<li>".$login['info']['typename']."</li></ul>";
-        
+
         foreach($login['conns'] as $num => $conn)
         {
             $num += 1;
@@ -398,7 +398,7 @@ class dAmnCmds extends module
             $idle = $bot->uptime(time() - $conn['idle']);
             if ($idle == '')
                 $idle = "0 seconds";
-                
+
             $msg .= "<b>idle:</b> $idle<br>".
                 "<b>chatrooms:</b> ";
             $chats = array();
@@ -428,7 +428,7 @@ class dAmnCmds extends module
             $bot->dAmn->say("$cmd->from: This user is offline or does not exist.", $cmd->ns);
         }
     }
-    
+
     function c_get($cmd, $bot)
     {
         $ns = $cmd->ns();
@@ -509,7 +509,7 @@ class dAmnCmds extends module
                 $bot->Commands->execute("help");
         }
     }
-    
+
     function c_ping($cmd, $bot)
     {
         $t = microtime(true);
@@ -518,7 +518,7 @@ class dAmnCmds extends module
         $passed = round(microtime(true) - $t, 4);
         $bot->dAmn->say("Pong! $passed s", $cmd->ns);
     }
-    
+
     function trigcheck($evt, $bot)
     {
         if (in_array(strtolower($evt->ns), $bot->disabledRooms) || $bot->noGuests && $bot->Commands->has_privs($evt->from, 'about')) return;
@@ -565,7 +565,7 @@ class dAmnCmds extends module
                     {
                         $v = $v[0].'<b></b>'.$v[1].'<b></b>'.substr($v, 2);
                         $a[] = $v;
-                    }                            
+                    }
                     $val = join(' ', $a);
                 }
                 $txt[]="<b>$key</b>: $val";
