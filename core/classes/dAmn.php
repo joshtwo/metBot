@@ -1,5 +1,6 @@
 <?php
 
+// TODO: Are we ever going to just replace this with curl or what?
 function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=array(), $bytes=null)
 {
     global $printIt;
@@ -12,7 +13,6 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
             $headers .= "POST $url HTTP/1.1\r\n";
         else $headers .= "GET $url HTTP/1.1\r\n";
         $headers .= "Host: $host\r\n";
-        //$headers .= "User-Agent: Mozilla/5.0 (X11; Linux i686; rv:38.0) Gecko/20100101 Firefox/38.0\r\n";
         $headers .= "User-Agent: Mozilla/5.0 (X11; Linux i686; rv:46.0) Gecko/20100101 Firefox/46.0\r\n";
         if ($referer)
         {
@@ -28,7 +28,6 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
         if ($cookies != array())
             $headers .= "Cookie: ".cookie_string($cookies)."\r\n";
         $headers .= "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n";
-        //$headers .= "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n";
         $headers .= "Accept-Language: en-US,en;q=0.5\r\n";
         // the fix we've all been waiting for; ask for compressed data
         $headers .= "Accept-Encoding: gzip, deflate\r\n";
@@ -57,7 +56,8 @@ function send_headers($socket, $host, $url, $referer=null, $post=null, $cookies=
                 $head = substr($response, 0, $pos);
                 $body = substr($response, $pos + 4);
             }
-            else // they don't send the HTTP body with 2 CRFLs at the start, so we use Content-Length to manually slice it out
+            else
+            // they don't send the HTTP body with 2 CRFLs at the start, so we use Content-Length to manually slice it out
             {
                 $start = stripos($response, "Content-Length: ");
                 if ($start === false)
@@ -225,11 +225,6 @@ class dAmn
         $pkt = '';
         while (!$done && ++$loops)
         {
-            /*if ($loops > 2)
-            {
-                echo "Broken packet received at position ". count($this->queue) . ": -----\n$pkt\n-----\n";
-                $this->brokenPackets[] = $pkt;
-            }*/
             $pkt = $this->recv();
             if ($this->bot->disconnected)
             {
@@ -244,21 +239,11 @@ class dAmn
             $buffer .= $pkt;
             if ($buffer[strlen($buffer)-1] == "\0")
             {
-                /*if ($loops > 2)
-                {
-                    echo "Finishing packet:----\n$pkt\n----\n";
-                    $this->brokenPacket[] = "@@@$pkt";
-                    if (count($this->brokenPacket) >= 100)
-                        array_shift($this->brokenPacket);
-                }*/
                 $done = true;
                 $pkt_arr = explode("\0", $buffer);
                 array_pop($pkt_arr);
                 foreach ($pkt_arr as $p)
                 {
-                    /*if (count($this->queue) >= 100)
-                        array_shift($this->queue);
-                    $this->queue[] = $p;*/
                     $this->process($p);
                 }
             }
