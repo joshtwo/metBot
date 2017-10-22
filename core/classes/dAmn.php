@@ -439,7 +439,6 @@ class dAmn
 
     function process($packet) // process a recieved packet
     {
-        //echo "Packet: $packet\n";
         $packet = $this->parse_tablumps($packet);
         $packet = new Packet($packet);
 
@@ -581,7 +580,6 @@ class dAmn
 
             case 'ping':
                 $this->send("pong\n\0");
-                //$this->bot->Console->msg("ping, pong");
             break;
 
             case 'kicked':
@@ -765,8 +763,6 @@ class dAmn
         if (!$agent)
             $agent = $this->bot->agent;
         $data = "dAmnClient 0.2\nagent=$agent\n\0";
-        #$channel = $this->deform($this->bot->join[0]);
-        #$data="dAmnClient 0.2\nagent=dAmn WebClient 0.7.pre-1 - dAmn Flash plugin 1.2\nbrowser=$agent\nurl=http://chat.deviantart.com/chat/$channel\n\0";
 
         echo "Data: $data\n";
         $this->bot->Console->notice("Initiating dAmn handshake...");
