@@ -882,10 +882,6 @@ class dAmn
                             $members = join(", ", $this->query("members-list", $c));
                             $this->bot->Console->msg("Members in ". $this->deform($c) .":\n$members\n");
                         break;
-                        /*case "/attach":
-                            $this->bot->Console->notice(($this->bot->attach?"Unattaching prompt from":"Attaching prompt to")." the bottom of the screen...");
-                            $this->bot->attach = !$this->bot->attach;
-                        break;*/
                         case "/me":
                             if (strlen($input_text) > 4)
                             {
