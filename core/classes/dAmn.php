@@ -217,9 +217,8 @@ class dAmn
     {
         $done = false;
         $buffer = '';
-        $loops = 0;
         $pkt = '';
-        while (!$done && ++$loops)
+        while (!$done)
         {
             $pkt = $this->recv();
             if ($this->bot->disconnected)
