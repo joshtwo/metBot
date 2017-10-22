@@ -185,10 +185,6 @@ class dAmn
     private $bot;
 
     // for debugging
-    public $queue = array();
-    public $brokenPackets = array();
-    public $sent;
-    public $recieved;
     public $socket_err;
     public $socket_err_str;
 
@@ -199,10 +195,10 @@ class dAmn
 
     function send($data)
     {
-        $this->sent = fwrite($this->s, $data);
+        fwrite($this->s, $data);
     }
 
-    function recv($keep_count=false)
+    function recv()
     {
         if ($this->bot->quit) return;
         $response = '';
