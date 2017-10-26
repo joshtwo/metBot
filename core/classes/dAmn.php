@@ -928,7 +928,7 @@ class dAmn
                     {
                         $this->bot->Console->notice("Sending message...");
                         // dAmn is latin1
-                        $input_text = mb_convert_encoding($input_text, 'iso-8859-1');
+                        $input_text = mb_convert_encoding($input_text, 'utf-8');
                         $this->say($input_text, $this->bot->ns);
                     }
 
