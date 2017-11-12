@@ -26,6 +26,8 @@ class Announce extends module
         foreach($rooms as $r)
         {
             $ids = array_keys($this->announcements[$r]);
+            foreach ($ids as $id)
+                $this->announcements[$r][$id]['time'] = 0;
         }
     }
 
@@ -137,9 +139,11 @@ class Announce extends module
         if ($this->announcements)
             foreach ($this->announcements as $ns => $list)
             {
-                foreach($list as $id => $announcement)
-                    if ($announcement['time'] == 0)
-                        $this->anouncements[$ns][$id]['time'] = time();
+                foreach($list as $id => &$announcement)
+                    if ($announcement['time'] === 0)
+                    {
+                        $this->announcements[$ns][$id]['time'] = time();
+                    }
                     elseif (time() - $announcement['time'] > $announcement['interval'])
                     {
                         $devs = array();
