@@ -195,6 +195,8 @@ class dAmn
 
     function send($data)
     {
+        // dAmn is UTF-8 now
+        $data = mb_convert_encoding($data, 'utf-8');
         fwrite($this->s, $data);
     }
 
@@ -898,8 +900,6 @@ class dAmn
                                 $message .= $m;
                                 $m = $this->bot->Console->get('> ', '')."\n";
                             }
-                            // dAmn is latin1
-                            $message = mb_convert_encoding($message, 'iso-8859-1');
                             stream_set_blocking(STDIN, false);
                             $this->say($message, $this->bot->ns);
                         break;
@@ -927,8 +927,6 @@ class dAmn
                     if (!$ranCommand && $input_text != "\n")
                     {
                         $this->bot->Console->notice("Sending message...");
-                        // dAmn is latin1
-                        $input_text = mb_convert_encoding($input_text, 'utf-8');
                         $this->say($input_text, $this->bot->ns);
                     }
 
