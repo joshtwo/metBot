@@ -215,18 +215,19 @@ class Welcome extends module
     function c_welcome($cmd, $bot)
     {
         $msg = $cmd->arg(0, true);
+        $from = strtolower($cmd->from);
         if ($msg != -1)
         {
             if ($this->indv)
             {
                 if ($msg == 'clear')
                 {
-                    unset($this->welcomes[$cmd->ns]['indv'][$cmd->from]);
+                    unset($this->welcomes[$cmd->ns]['indv'][$from]);
                     $bot->dAmn->say("$cmd->from: Your welcome has been cleared.", $cmd->ns);
                 }
                 else
                 {
-                    $this->welcomes[$cmd->ns]['indv'][$cmd->from] = $msg;
+                    $this->welcomes[$cmd->ns]['indv'][$from] = $msg;
                     $bot->dAmn->say("$cmd->from: Your welcome message is now set to <i>\"$msg\"</i>.", $cmd->ns);
                 }
                 $this->save($this->welcomes, "welcomes");
