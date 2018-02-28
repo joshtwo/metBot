@@ -28,7 +28,7 @@ class User extends module
                     if ($level !== -1)
                     {
                         $keys = array_keys($bot->levels);
-                        if (in_array($level, $keys))
+                        if (in_array($level, $keys, true))
                         {
                             $bot->privs[$level][] = $user;
                             $bot->dAmn->say("$cmd->from: User <b>:dev$user:</b> was added to the group <b>". $bot->levels[$level] ."</b>.", $cmd->ns);
