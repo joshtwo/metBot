@@ -34,6 +34,10 @@ class User extends module
                             $bot->dAmn->say("$cmd->from: User <b>:dev$user:</b> was added to the group <b>". $bot->levels[$level] ."</b>.", $cmd->ns);
                             $bot->saveUserInfo();
                         }
+                        elseif (!is_numeric($level))
+                        {
+                            $bot->dAmn->say("$cmd->from: You must pass a privclass number to add the user to.", $cmd->ns);
+                        }
                         else
                         {
                             $bot->dAmn->say("$cmd->from: There is no level $level privclass.", $cmd->ns);
