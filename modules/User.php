@@ -60,7 +60,7 @@ class User extends module
                     $found = false;
                     foreach($bot->privs as $level => $members)
                     {
-                        if (in_array($user, $members))
+                        if (in_array($user, $members, true))
                         {
                             $found = true;
                             break;
@@ -153,7 +153,7 @@ class User extends module
             {
                 if ($level != -1)
                 {
-                    if (in_array($level, $bot->levels))
+                    if (in_array($level, $bot->levels, true))
                     {
                         $levelpriv = -10;
                         foreach ($bot->levels as $prv => $lvl)
@@ -193,7 +193,7 @@ class User extends module
                 {
                     if ($priv != -1)
                     {
-                        if (in_array($level, $bot->levels))
+                        if (in_array($level, $bot->levels, true))
                         {
                             foreach ($bot->levels as $prv => $lvl)
                             {
