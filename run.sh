@@ -32,8 +32,9 @@ do
     # see if there are new args in the restart
     if [ -s ./core/status/restart.bot ]
     then
-      echo Using new arguments `cat ./core/status/restart.bot`
-      eval 'NEWARGS=('`cat ./core/status/restart.bot`')'
+      RESTART=`cat ./core/status/restart.bot`
+      echo Using new arguments \`$RESTART\`
+      eval "NEWARGS=($RESTART)"
       php run.php "${NEWARGS[@]}"
     else
       echo Restart file empty, using old arguments...
