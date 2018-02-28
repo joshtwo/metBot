@@ -89,7 +89,6 @@ class User extends module
         }
         else
         {
-
             $bot->Event->setArgs("user");
             $bot->Commands->execute("help");
         }
