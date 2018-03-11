@@ -468,7 +468,7 @@ class System extends module
                     {
                         if (strtolower($j) == strtolower($bot->dAmn->format($channel)))
                         {
-                            unset($bot->join[$key]);
+                            array_splice($bot->join, $key, 1);
                             $match = true;
                         }
                     }
