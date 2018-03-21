@@ -12,17 +12,20 @@ class Modules
 
     function load($module_dir, $ext="php")
     {
-        if ($module_dir[strlen($module_dir) - 1] != '/')
-            $module_dir .= '/';
-        $files = scandir($module_dir);
-        $pos = strlen($ext) * -1;
-        foreach ($files as $f)
+        if (is_dir($module_dir))
         {
-            if (substr($f, $pos) == $ext)
+            if ($module_dir[strlen($module_dir) - 1] != '/')
+                $module_dir .= '/';
+            $files = scandir($module_dir);
+            $pos = strlen($ext) * -1;
+            foreach ($files as $f)
             {
-                $class = substr($f, 0, $pos - 1);
-                require_once($module_dir . $class . '.' . $ext);
-                $this->mods[$class] = new $class($this->bot->Event);
+                if (substr($f, $pos) == $ext)
+                {
+                    $class = substr($f, 0, $pos - 1);
+                    require_once($module_dir . $class . '.' . $ext);
+                    $this->mods[$class] = new $class($this->bot->Event);
+                }
             }
         }
     }
