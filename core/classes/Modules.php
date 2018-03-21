@@ -10,17 +10,16 @@ class Modules
         $this->bot = $bot;
     }
 
-    function load($cdir, $ext="php")
+    function load($module_dir, $ext="php")
     {
-        $cdirname = $cdir;
-        $cdir = scandir($cdir);
-        $pos = (strlen($ext) * -1);
-        foreach ($cdir as $c)
+        $files = scandir($module_dir);
+        $pos = strlen($ext) * -1;
+        foreach ($files as $f)
         {
-            if (substr($c, $pos)==$ext)
+            if (substr($f, $pos) == $ext)
             {
-                $class = substr($c, 0, strpos($c, ".$ext"));
-                require_once($cdirname.$class.'.'.$ext);
+                $class = substr($f, 0, $pos - 1);
+                require_once($module_dir . $class . '.' . $ext);
                 $this->mods[$class] = new $class($this->bot->Event);
             }
         }
