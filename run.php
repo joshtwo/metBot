@@ -235,7 +235,9 @@ if (isset($options['A']) || isset($options['agent']))
     $bot->Console->notice("Setting the user agent to {$bot->agent}!");
 }
 
-$bot->Modules->load('./modules/');
+$bot->Modules->load('./modules');
+$bot->Modules->load('./modules/hidden');
+
 if (!$bot->pk)
 {
     $array = $bot->dAmn->getAuthtoken($bot->username, $bot->password);
