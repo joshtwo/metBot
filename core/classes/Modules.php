@@ -12,6 +12,8 @@ class Modules
 
     function load($module_dir, $ext="php")
     {
+        if ($module_dir[strlen($module_dir) - 1] != '/')
+            $module_dir .= '/';
         $files = scandir($module_dir);
         $pos = strlen($ext) * -1;
         foreach ($files as $f)
