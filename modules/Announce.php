@@ -10,7 +10,21 @@ class Announce extends module
 
     function main()
     {
-        $this->addCmd("announce", 75, "Set up announcements to be posted at a regular interval.");
+        $helpText = [
+            // TODO: List announcements for only one room, not all the fucking rooms maybe?
+            'list' => 'to list all announcements on the bot',
+            'add <i>interval</i> <i>message</i>' => 'to add the announcement <i>interval</i> with message <i>message</i>',
+            'del <i>announcement</i>' => 'to delete announcement number <i>announcement</i>',
+            'set <i>announcement</i> interval/msg <i>value</i>' => 'to set the interval or message of announcement number <i>annonucement</i> to <i>value</i>'
+        ];
+        $helpStr = "Set up announcements to be posted at a regular interval. The #<i>channel</i> parameter is optional, defaulting to the current channel. Intervals are specified as a number with a unit of time.";
+        $helpStr .= " Units are s for seconds, m for minutes, d for days, and w for weeks. Ex. <code>10m, 60s, \"1h 30m\", 0.5w</code>.<br><sub><ul>";
+        foreach ($helpText as $sub => $description)
+        {
+            $helpStr .= "<li>Use <b>{trigger}announce #<i>channel</i> {$sub}</b> {$description}.</li>";
+        }
+        $helpStr .= "</ul></sub>";
+        $this->addCmd("announce", 75, $helpStr);
         $this->hook('e_announce', 'loop');
         $this->loadAnnouncements();
     }
@@ -50,14 +64,19 @@ class Announce extends module
             if (($interval = $cmd->arg(1)) != -1 && ($msg = $cmd->arg(2, true)) != -1)
             {
                 $interval = $bot->stringToTime($interval);
-                $this->announcements[$target][] = array(
-                    'interval' => $interval,
-                    'msg' => $msg,
-                    'time' => time()
-                );
-                $this->saveAnnouncements();
-                $interval = $bot->uptime($interval, false);
-                $bot->dAmn->say("{$cmd->from}: The announcement <i>\"$msg\"</i> will be posted every <b>$interval</b> in $chat.", $cmd->ns);
+                if (!$interval)
+                    $bot->dAmn->say("{$cmd->from}: You must set a valid interval to repeat the announcement at.", $cmd->ns);
+                else
+                {
+                    $this->announcements[$target][] = array(
+                        'interval' => $interval,
+                        'msg' => $msg,
+                        'time' => time()
+                    );
+                    $this->saveAnnouncements();
+                    $interval = $bot->uptime($interval, false);
+                    $bot->dAmn->say("{$cmd->from}: The announcement <i>\"$msg\"</i> will be posted every <b>$interval</b> in $chat.", $cmd->ns);
+                }
             }
             else
                 $bot->dAmn->say("{$cmd->from}: You must set ". ($interval == -1 ? "an interval" : "a message") . " for this announcement.", $cmd->ns);
@@ -75,7 +94,15 @@ class Announce extends module
                     else
                     {
                         if ($attr == 'interval')
+                        {
                             $val = $bot->stringToTime($val);
+                            if (!$val)
+                            {
+                                $bot->dAmn->say("{$cmd->from}: You must set a valid interval to repeat the announcement at.", $cmd->ns);
+                                // I need to fix the flow of this damn code
+                                return;
+                            }
+                        }
                         $this->announcements[$target][$id][$attr] = $val;
                         $this->saveAnnouncements();
                         if ($attr == 'msg')
