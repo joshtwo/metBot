@@ -197,6 +197,11 @@ class dAmn
     {
         // dAmn is UTF-8 now
         $data = mb_convert_encoding($data, 'utf-8');
+        if (_debug('SHOW_OUTGOING_PACKETS'))
+        {
+            $print_data = str_replace(chr(0), '\0', $data);
+            echo "Outgoing:\n" . str_repeat("-", 10) . chr(10) . $print_data . chr(10) . str_repeat("-", 10) . chr(10);
+        }
         fwrite($this->s, $data);
     }
 
