@@ -119,13 +119,15 @@ class Mute extends module
                 if (!isset($this->channels[$ns]['users']))
                     $this->channels[$ns]['users'] = array();
                 $timeSeconds = $bot->stringToTime($time);
-                if (!$timeSeconds)
+                if ($timeSeconds !== 0.0 && !$timeSeconds)
                 {
                     $bot->dAmn->say("$cmd->from: Time string \"$time\" is invalid. The units of time are s, h, d and w (second, hour, day and week).", $cmd->ns);
                     return;
                 }
                 $time = $timeSeconds;
-                $this->channels[$ns]['users'][$user] = array('start' => ($ts = time()), 'duration' => $time);
+                $ts = time();
+                if ($time !== 0.0)
+                    $this->channels[$ns]['users'][$user] = array('start' => $ts, 'duration' => $time);
                 // add to the history log
                 if (!isset($this->history[$user]))
                     $this->history[$user] = array();
@@ -139,8 +141,17 @@ class Mute extends module
                 $this->history[$user][$ns][] = array('start' => $ts, 'duration' => $time, 'reason' => $reason, 'by' => $cmd->from);
 
                 $time = $bot->uptime($time, false);
-                $bot->dAmn->promote($user, $this->channels[$ns]['class'], $ns);
-                $bot->dAmn->say("$cmd->from: Muting <b>:dev$user:</b> ($time) in $channel for reason <i>" . ($reason ? $reason : "none") . "</i>.", $cmd->ns);
+
+                if ($timeSeconds === 0.0)
+                    $bot->dAmn->ban($user, $ns);
+                else
+                    $bot->dAmn->promote($user, $this->channels[$ns]['class'], $ns);
+                if ($timeSeconds === 0.0)
+                {
+                    $bot->dAmn->say("$cmd->from: Banning <b>:dev$user:</b> in $channel for reason <i>" . ($reason ? $reason : "none") . "</i>.", $cmd->ns);
+                }
+                else
+                    $bot->dAmn->say("$cmd->from: Muting <b>:dev$user:</b> ($time) in $channel for reason <i>" . ($reason ? $reason : "none") . "</i>.", $cmd->ns);
                 $this->saveSettings();
             }
         }
@@ -231,7 +242,10 @@ class Mute extends module
                 {
                     $msg[] = "- Muted by :dev" . $mutes[$i-1]['by'] . ":";
                     $msg[] = "- Muted on: " . date('M, d Y - h:i:s A', $mutes[$i-1]['start']);
-                    $msg[] = "- Duration: " . $bot->uptime($mutes[$i-1]['duration'], false);
+                    if ($mutes[$i-1]['duration'] === 0.0)
+                        $msg[] = "- Duration: banned";
+                    else
+                        $msg[] = "- Duration: " . $bot->uptime($mutes[$i-1]['duration'], false);
                     $msg[] = "- Reason: " . ($mutes[$i-1]['reason'] ? $mutes[$i-1]['reason'] : '<i>none</i>');
                 }
             }
