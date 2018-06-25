@@ -223,10 +223,10 @@ class Mute extends module
         {
             $info = $this->history[$user];
             $msg[] = "<b>Info for :dev$user:</b><sub>";
-            $msg[] = "Number of mutes: " . count($info);
             foreach($info as $ns => $mutes)
             {
                 $msg[] = "Mutes in <b>" . $bot->dAmn->deform($ns) . "</b>:";
+                $msg[] = "Number of mutes: " . count($mutes);
                 for($i = count($mutes); $i > 0; --$i)
                 {
                     $msg[] = "- Muted by :dev" . $mutes[$i-1]['by'] . ":";
