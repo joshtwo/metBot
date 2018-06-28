@@ -28,15 +28,15 @@ class User extends module
                     if ($level !== -1)
                     {
                         $keys = array_keys($bot->levels);
-                        if (in_array($level, $keys, true))
+                        if (!is_numeric($level))
+                        {
+                            $bot->dAmn->say("$cmd->from: You must pass a privclass number to add the user to.", $cmd->ns);
+                        }
+                        elseif (in_array((int) $level, $keys, true))
                         {
                             $bot->privs[$level][] = $user;
                             $bot->dAmn->say("$cmd->from: User <b>:dev$user:</b> was added to the group <b>". $bot->levels[$level] ."</b>.", $cmd->ns);
                             $bot->saveUserInfo();
-                        }
-                        elseif (!is_numeric($level))
-                        {
-                            $bot->dAmn->say("$cmd->from: You must pass a privclass number to add the user to.", $cmd->ns);
                         }
                         else
                         {
