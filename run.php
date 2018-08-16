@@ -385,6 +385,7 @@ function run($bot)
         if (!$bot->input)
         {
             $bot->dAmn->packetLoop();
+            $bot->Event->loop(); // events hooked to 'loop'
             if ($bot->disconnected)
             {
 
@@ -402,13 +403,12 @@ function run($bot)
         else
         {
             $bot->Console->notice("Input is now on.");
-            // I run dAmn::packetLoop() in dAmn::input()
+            // dAmn::input() has its own packet processing loop
             $bot->dAmn->input();
             stream_set_blocking(STDIN, true);
             $bot->Console->notice("Input is now off.");
             $bot->input = false;
         }
-        $bot->Event->loop(); // events hooked to 'loop'
     }
     if ($bot->quit || $bot->restart)
         $bot->input = false;
