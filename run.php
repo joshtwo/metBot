@@ -370,11 +370,14 @@ function run($bot)
             $bot->Console->notice("Quitting due to login failure...");
             $bot->quit = true;
         }
-    }
-    stream_set_blocking($bot->dAmn->s, false);
+        else
+        {
+            stream_set_blocking($bot->dAmn->s, false);
 
-    if ($bot->input === null)
-        $bot->input = $bot->start_input;
+            if ($bot->input === null)
+                $bot->input = $bot->start_input;
+        }
+    }
 
     while (!$bot->quit)
     {
