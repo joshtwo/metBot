@@ -25,7 +25,7 @@ If this is your first time running metBot, it'll automatically start configuring
 * Warn users - If a user doesn't have the privileges to use a command, this will tell them if you choose yes, or ignore them quietly if you choose no.
 
 These last two options DO NOT WORK ON WINDOWS unless you use an alternative Unix-like shell, like Cygwin.
-* Console colors - If enabled, console messages will be formatted with colors to make them more readable and a little prettier. The Windows Command Prompt doesnot support these by default, so doing this will cause unparsed color escapes to show up in your console and ruin the output.
+* Console colors - If enabled, console messages will be formatted with colors to make them more readable and a little prettier. The Windows Command Prompt does not support these by default, so doing this will cause unparsed color escapes to show up in your console and ruin the output.
 * Console input - If enabled, you can talk through the console window as your bot, and run its commands as the administrator. See section "Console Input" for more info. Note: This DOES NOT WORK ON WINDOWS due to PHP being unable to do non-blocking reads from standard input in the Command Prompt.
 
 ## Some useful commands
