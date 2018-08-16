@@ -257,7 +257,7 @@ if (!$bot->pk)
     $bot->quit = true;
 }
 
-function handleLogin(&$bot, $login_error, $skip_retry=false, $retries=1)
+function handleLogin($bot, $login_error, $skip_retry=false, $retries=1)
 {
     if (_debug('SKIP_RETRY'))
         $skip_retry = true;
@@ -320,7 +320,7 @@ function handleLogin(&$bot, $login_error, $skip_retry=false, $retries=1)
     return $login_error === 1;
 }
 
-function run(&$bot)
+function run($bot)
 {
     if (!$bot->quit)
     {
@@ -413,14 +413,14 @@ function run(&$bot)
 }
 
 // The following are for debugging purposes
-function fakeRun(&$bot)
+function fakeRun($bot)
 {
     echo "Enter packets to be interpreted. \\n becomes newline.";
     for(;;) $bot->dAmn->process(trim(str_replace("\\n", "\n", $bot->Console->get(">", true))));
 }
 
 // if I need this more I should spruce it up a bit using the !e command's code
-function evalLoop(&$bot)
+function evalLoop($bot)
 {
     echo "Enter code to be evaluated:";
     for(;;)
