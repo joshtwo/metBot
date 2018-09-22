@@ -512,7 +512,7 @@ class bot
         if (!$skip)
         {
             $this->colors = strtolower($this->Console->get("Would you like to use colors in the console window? [y/n]: ")) == "y";
-            $this->input = strtolower($this->Console->get("Would you like to use console input? [y/n]: ")) == "y";
+            $this->input = $this->start_input = strtolower($this->Console->get("Would you like to use console input? [y/n]: ")) == "y";
         }
         $this->pk = '';
         $this->cookie = array();
