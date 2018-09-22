@@ -71,7 +71,7 @@ class bot
 
         if (!$login)
         {
-            echo "Failed to read config file.";
+            echo "Failed to read config file.\n";
             return false;
         }
 
