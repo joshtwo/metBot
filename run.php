@@ -327,9 +327,9 @@ function run($bot)
         $success = false;
         if (!$bot->OAuth->accessToken)
         {
-            $bot->Console->notice("Getting OAuth credentials...");
             if ($bot->OAuth->refreshToken && !isset($bot->getOAuth))
             {
+                $bot->Console->notice("Getting OAuth credentials...");
                 $success = $bot->OAuth->refreshTokens();
                 if ($success)
                     $bot->OAuth->notice("Successfully refreshed tokens!");
