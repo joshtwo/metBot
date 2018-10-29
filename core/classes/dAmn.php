@@ -212,7 +212,7 @@ class dAmn
         $response = fread($this->s, 15000);
         if (feof($this->s) || $response === false)
         {
-            if ($this->socket_err && $this->socket_err_str)
+            if ($this->socket_err || $this->socket_err_str)
                 $this->bot->Console->warn("Socket error #$this->socket_err: $this->socket_err_str");
             $this->bot->disconnected = true;
             $this->bot->Console->notice("Disconnected!");
@@ -248,6 +248,7 @@ class dAmn
                 {
                     $this->process($p);
                 }
+                return $pkt_arr;
             }
         }
     }
@@ -769,14 +770,15 @@ class dAmn
         echo "Data: $data\n";
         $this->bot->Console->notice("Initiating dAmn handshake...");
         $this->send($data);
-        $response = $this->recv();
-        $this->process($response);
+        $this->packetLoop();
+        //$this->process($response);
         $this->bot->Console->notice("Logging in...");
         $data = "login $username\npk=$token\n\0";
         $this->send($data);
-        $response = $this->recv();
-        $this->process($response);
-        $pkt = new Packet($response);
+        $response = $this->packetLoop();
+        //$this->process($response);
+        //$pkt = new Packet($response);
+        $pkt = new Packet($response[count($response) - 1]);
         switch ($pkt['e'])
         {
             case 'ok':
