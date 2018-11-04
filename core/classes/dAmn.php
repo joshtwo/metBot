@@ -237,8 +237,11 @@ class dAmn
             // only have a partial packet constructed
             // for god knows how long I failed to notice this subtle issue
             // now I make sure the buffer isn't partially full
-            if ($pkt == '' && $buffer == '') return array();
+            if ($pkt == '' && $buffer == '')
+                return array();
+
             $buffer .= $pkt;
+
             if ($buffer[strlen($buffer)-1] == "\0")
             {
                 $done = true;
