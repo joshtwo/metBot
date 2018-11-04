@@ -285,9 +285,7 @@ class bot
         }
 
         $lower = function($list) {
-            for ($i = 0; $i < count($list); ++$i)
-                $list[$i] = strtolower($list[$i]);
-            return $list;
+            return array_map('strtolower', $list);
         };
 
         $format = function($list) use ($lower) {
