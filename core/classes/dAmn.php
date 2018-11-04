@@ -583,6 +583,8 @@ class dAmn
 
             case 'ping':
                 $this->send("pong\n\0");
+                if (_debug('PING'))
+                    $this->bot->Console->notice("ping, pong");
             break;
 
             case 'kicked':
