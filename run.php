@@ -386,6 +386,7 @@ function run($bot)
         {
             $bot->dAmn->packetLoop();
             $bot->Event->loop(); // events hooked to 'loop'
+            $bot->dAmn->checkTimeout();
             if ($bot->disconnected)
             {
 

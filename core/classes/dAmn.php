@@ -181,16 +181,24 @@ class dAmn
 {
     // TODO: clean up public implementation details somehow
     public $s;
-
-    private $bot;
-
+    // the Unix time at which we last received a packet
+    public $lastPacketTime;
+    // the maximum number of seconds we're willing to wait for a new packet
+    // before assuming we've disconnected
+    public $maxWait;
     // for debugging
     public $socket_err;
     public $socket_err_str;
 
+    private $bot;
+
+
     function __construct($bot)
     {
         $this->bot = $bot;
+        $this->lastPacketTime = -1;
+        // pings seem to happen roughly 100 seconds a piece, so this is generous
+        $this->maxWait = 60 * 2.5;
     }
 
     function send($data)
@@ -207,8 +215,8 @@ class dAmn
 
     function recv()
     {
-        if ($this->bot->quit) return;
-        $response = '';
+        if ($this->bot->quit)
+            return;
         $response = fread($this->s, 15000);
         if (feof($this->s) || $response === false)
         {
@@ -217,6 +225,8 @@ class dAmn
             $this->bot->disconnected = true;
             $this->bot->Console->notice("Disconnected!");
         }
+        elseif (is_string($response) && $response != '')
+            $this->lastPacketTime = time();
         return $response;
     }
 
@@ -253,6 +263,16 @@ class dAmn
                 }
                 return $pkt_arr;
             }
+        }
+    }
+
+    // test to see if we've timed out
+    function checkTimeout()
+    {
+        if ($this->lastPacketTime != -1 && time() - $this->lastPacketTime > $this->maxWait)
+        {
+            $this->bot->Console->warn("Max timeout reached!");
+            $this->bot->disconnected = true;
         }
     }
 
@@ -813,10 +833,11 @@ class dAmn
             $channel = "";
             $pkt = $this->packetLoop();
             $this->bot->Event->loop();
+            $this->checkTimeout();
 
-            if ($pkt != -1)
+            if (!empty($pkt))
             {
-                if ($this->bot->Event->getPacket()->cmd != "ping")
+                if ($this->bot->Event->getPacket()->cmd != "ping" || _debug('PING'))
                     $mkprompt = true;
             }
 
