@@ -404,7 +404,8 @@ class dAmnCmds extends module
             $chats = array();
             foreach($conn->body as $chat)
             {
-                $chats[] = $bot->dAmn->deform($chat);
+                if ($chat)
+                    $chats[] = $bot->dAmn->deform($chat);
             }
             $msg .= join(" ", $chats);
             $msg .= "<br><br>";
