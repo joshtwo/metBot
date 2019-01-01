@@ -12,7 +12,7 @@ class Welcome extends module
 
     function main()
     {
-        $this->addCmd("wt", 50, "Sets a welcome. The #<i>channel</i> parameter is optional. If you do not specify it, the welcome will be set for the current channel. In all welcomes, <b>{from}</b> is replaced with the name of the person that enters the room.<sub><ul><li>Use <b>{trigger}wt #<i>channel</i> on/off</b> to turn welcomes on and off.</li><li>Use <b>{trigger}wt #<i>channel</i> all <i>message</i></b> to welcome everyone that enters #<i>channel</i> with <i>message</i></li><li>Use <b>{trigger}wt #<i>channel</i> pc <i>privclass</i> <i>message</i></b> to welcome everyone that joins and is in the <i>privclass</i> privclass with <i>message</i>.</li><li>Use <b>{trigger}wt #<i>channel</i> indv/individual <i>message</i></b> to let people set their own welcomes with the {trigger}welcome command, with their welcomes coming after the message <i>message</i>. You do not have to set an individual welcome message.</li><li>Use <b>{trigger}wt show</b> to show the settings configured in the welcome module for all rooms.</li></ul>");
+        $this->addCmd("wt", 50, "Sets a welcome. The #<i>channel</i> parameter is optional. If you do not specify it, the welcome will be set for the current channel. In all welcomes, <b>{from}</b> is replaced with the name of the person that enters the room.<sub><ul><li>Use <b>{trigger}wt #<i>channel</i> on/off</b> to turn welcomes on and off.</li><li>Use <b>{trigger}wt #<i>channel</i> all <i>message</i></b> to welcome everyone that enters #<i>channel</i> with <i>message</i></li><li>Use <b>{trigger}wt #<i>channel</i> pc <i>privclass</i> <i>message</i></b> to welcome everyone that joins and is in the <i>privclass</i> privclass with <i>message</i>.</li><li>Use <b>{trigger}wt #<i>channel</i> indv/individual <i>message</i></b> to let people set their own welcomes with the {trigger}welcome command, with their welcomes coming after the message <i>message</i>. You do not have to set an individual welcome message.</li><li>Use <b>{trigger}wt #<i>channel</i> del <i>welcome-type</i></b> to delete/unset one of the aforementioned types of welcomes.</li><li>Use <b>{trigger}wt #<i>channel</i> indv <i>username</i></b> to delete <i>username</i>'s individual welcome.</li><li>Use <b>{trigger}wt show</b> to show the settings configured in the welcome module for all rooms.</li></ul>");
         $this->addCmd("welcome", 0, "When individual welcomes are on, this sets your welcome. Used <b>{trigger}welcome <i>message</i></b>.");
         $this->hook("do_welcome", "recv_join");
         $this->load($this->welcomes, "welcomes");
@@ -206,6 +206,7 @@ class Welcome extends module
                         }
                     }
                 }
+                break;
             default:
                 $bot->Event->setArgs("wt");
                 $bot->Commands->execute("help");
