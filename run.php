@@ -105,8 +105,12 @@ $bot->options = $options;
 
 if (isset($options['D']))
 {
-    foreach (explode(',', $options['D']) as $constant)
-        define("METBOT_DEBUG_$constant", true);
+    $debug_flags = $options['D'];
+    if (!is_array($debug_flags))
+        $debug_flags = [$debug_flags];
+    foreach($debug_flags as $flag)
+        foreach (explode(',', $flag) as $constant)
+            define("METBOT_DEBUG_$constant", true);
 }
 
 if (isset($options['c'])
