@@ -25,7 +25,7 @@ if (file_exists('./core/status/close.bot'))
 
 
 
-$options = getopt('hc::u:o:t:a:b:iIlLqQj:A:D:', array(
+$options = getopt('hc::u:o:t:a:b:iIlLqQkj:A:D:0', array(
     'help',
     'config::',
     'user:',
@@ -40,7 +40,9 @@ $options = getopt('hc::u:o:t:a:b:iIlLqQj:A:D:', array(
     'autojoin:',
     'add-autojoin:',
     'oauth',
-    'no-oauth'
+    'no-oauth',
+    'authtoken',
+    'auth-only',
 ));
 
 if ($options === false || isset($options['h']) || isset($options['help']))
@@ -65,6 +67,7 @@ Options:
   -I, --no-input      Force input to be off.
   -l, --logging       Force logging to be on.
   -L, --no-logging    Force logging to be off.
+  -k, --authtoken     Force collection of new auth token.
   -q, --oauth         Force collection of new OAuth session.
   -Q, --no-oauth      Keep the bot from attempting to get a new OAuth session
                         on startup. This is useful when you run the bot on a
@@ -75,6 +78,8 @@ Options:
                         ex: {$argv[0]} -j Botdom,seniors,mychatroom
   -a, --add-autojoin=LIST  Add the comma-separated list LIST of rooms to the
                              bot's existing autojoin list.
+  -0, --auth-only     Do not log in; only authenticate. This is mostly used
+                        for testing and refreshing credentials.
   -D FLAGS            Enable the comma-separated list of debug flags FLAGS.
 
 Note that the "off" options override the "on" options (ex. -I supercedes -i),
@@ -242,10 +247,14 @@ if (isset($options['A']) || isset($options['agent']))
 $bot->Modules->load('./modules');
 $bot->Modules->load('./modules/hidden');
 
-if (!$bot->pk)
+$new_token = false;
+
+if (!$bot->pk || ($new_token = _or(@isset($options['k']), isset($options['authtoken']))))
 {
+    if ($new_token)
+        $bot->Console->notice("Forced collection of new authtoken and cookies!");
     $array = $bot->dAmn->getAuthtoken($bot->username, $bot->password);
-    if (isset($array['token']) && isset($array['cookie']))
+    if ($array && isset($array['token']) && isset($array['cookie']))
     {
         $bot->pk = $array['token'];
         $bot->cookie = $array['cookie'];
@@ -259,6 +268,12 @@ if (!$bot->pk)
 {
     $bot->Console->warn("Failed to retrieve authtoken. Check your username and password to make sure your login is correct.");
     $bot->quit = true;
+}
+
+if (isset($options['0']) || isset($options['auth-only']))
+{
+    $bot->Console->notice("Quitting after authentication!");
+    exit();
 }
 
 function handleLogin($bot, $login_error, $skip_retry=false, $retries=1)
@@ -283,7 +298,7 @@ function handleLogin($bot, $login_error, $skip_retry=false, $retries=1)
                 {
                     $bot->cookie = array();
                     $array = $bot->dAmn->getAuthtoken($bot->username, $bot->password);
-                    if (isset($array['token']))
+                    if ($array && isset($array['token']))
                     {
                         $bot->pk = $array['token'];
                         $bot->cookie = $array['cookie'];
