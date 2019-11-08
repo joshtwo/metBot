@@ -682,7 +682,103 @@ class dAmn
         $this->bot->Event->process();
     }
 
-    function getAuthtoken($username, $password) // grab the bot's authtoken
+    function getAuthtoken($username, $password) // get the authtoken and cookies in Eclipse
+    {
+        // first get the validate_key/token values
+        if (($socket = @fsockopen("ssl://www.deviantart.com", 443)) == false)
+        {
+            $this->bot->Console->warn("Couldn't open socket to deviantart.com.");
+            return null;
+        }
+        $response = send_headers(
+            $socket,
+            "www.deviantart.com",
+            "/users/login",
+            "https://www.deviantart.com/"
+        );
+        fclose($socket);
+        if (!$response)
+        {
+            $this->bot->Console->warn("Couldn't get form keys; no response from dA.");
+            return null;
+        }
+        if (strpos($response, "Access to this page has been denied.") !== false)
+        {
+            $this->bot->Console->warn("The website is blocking the bot.");
+            return null;
+        }
+        $cookies = collect_cookies($response);
+        // input type="hidden" name="csrf_token" value="f-5jtSRC7rvXvdnP.q0o517.xR6eNAhOhfOE7H6QmCZorhhAKxT8lyixHlTHmInw-Bg"/>
+        $found_token = preg_match(
+            '/name="csrf_token" value="([^"]+)"/Ums',
+            $response,
+            $matches
+        );
+        if (!$found_token)
+        {
+            $this->bot->Console->warn("Couldn't find CSRF token.");
+            echo "RESPONSE: \n". str_repeat('-', 50) . $response . "\n" . str_repeat('-', 50) . "\n";
+            return null;
+        }
+
+        // create the payload
+        $payload = "referer=".urlencode("https://www.deviantart.com/");
+        $payload .= "&csrf_token={$matches[1]}";
+        $payload .= "&challenge=0&username={$username}&password=".urlencode($password);
+
+        if (($socket = @fsockopen("ssl://www.deviantart.com", 443)) == false)
+        {
+            $this->bot->Console->warn("Couldn't open socket to log into deviantart.com.");
+            return null;
+        }
+        $response = $this->bot->send_headers(
+            $socket,
+            "www.deviantart.com",
+            "/_sisu/do/signin",
+            "https://www.deviantart.com/",
+            $payload,
+            $cookies
+        );
+        fclose($socket);
+        if (!$response)
+        {
+            $this->bot->Console->warn("Couldn't perform login; no response from dA.");
+            return null;
+        }
+        $cookies=collect_cookies($response);
+
+        // now get the token from the chat page
+        if (($socket = @fsockopen("ssl://chat.deviantart.com", 443)) == false)
+        {
+            $this->bot->Console->warn("Failed to connect to chatrooms to get authtoken.\n");
+            return array();
+        }
+        $response = send_headers(
+            $socket,
+            "chat.deviantart.com",
+            "/chat/Botdom",
+            "https://chat.deviantart.com/",
+            null,
+            $cookies
+        );
+        if (($pos = strpos($response, "dAmn_Login( ")) !== false)
+        {
+            $response = substr($response, $pos+12);
+            return array(
+                'token' => substr($response, strpos($response, "\", ")+4, 32),
+                'cookie' => $cookies
+            );
+        }
+        else
+        {
+            $this->bot->Console->warn("Couldn't find authtoken in chat page!");
+            return array(
+                'cookie' => $cookies
+            );
+        }
+    }
+
+    function getAuthtokenOld($username, $password) // grab the bot's authtoken
     {
         // first get the validate_key/token values
         if (($socket = @fsockopen("ssl://www.deviantart.com", 443)) == false)
