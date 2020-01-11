@@ -682,7 +682,7 @@ class dAmn
         $this->bot->Event->process();
     }
 
-    function getAuthtoken($username, $password) // get the authtoken and cookies in Eclipse
+    function getAuthtoken($username, $password, $remember=true) // get the authtoken and cookies in Eclipse
     {
         // first get the validate_key/token values
         if (($socket = @fsockopen("ssl://www.deviantart.com", 443)) == false)
@@ -725,6 +725,8 @@ class dAmn
         $payload = "referer=".urlencode("https://www.deviantart.com/");
         $payload .= "&csrf_token={$matches[1]}";
         $payload .= "&challenge=0&username={$username}&password=".urlencode($password);
+        if ($remember)
+            $payload .= "&remember=on";
 
         if (($socket = @fsockopen("ssl://www.deviantart.com", 443)) == false)
         {
@@ -807,7 +809,7 @@ class dAmn
         // now log in
         $post = "ref=" . urlencode("https://www.deviantart.com/users/loggedin");
         $post .= "&username=$username&password=" . urlencode($password);
-        $post .= "&remember_me=1&validate_token=$matches[1]&validate_key=$matches[2]";
+        $post .= "&remember_me=1&validate_token=". @$matches[1] ."&validate_key=". @$matches[2];
 
         if (($socket = @fsockopen("ssl://www.deviantart.com", 443)) == false)
         {
