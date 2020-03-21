@@ -266,6 +266,18 @@ class dAmn
         }
     }
 
+    // get the last packet out of the given list
+    // if the list is empty, run a new packet loop to obtain packets
+    function getLastPacket($pkt_list) {
+        $pkt = end($pkt_list);
+        if ($pkt === false) {
+            $pkt = end($this->packetLoop());
+            if ($pkt === false)
+                return false;
+        }
+        return new Packet($pkt);
+    }
+
     // test to see if we've timed out
     function checkTimeout()
     {
@@ -894,14 +906,12 @@ class dAmn
         $this->bot->Console->notice("Initiating dAmn handshake...");
         $this->send($data);
         $this->packetLoop();
-        //$this->process($response);
         $this->bot->Console->notice("Logging in...");
         $data = "login $username\npk=$token\n\0";
         $this->send($data);
-        $response = $this->packetLoop();
-        //$this->process($response);
-        //$pkt = new Packet($response);
-        $pkt = new Packet($response[count($response) - 1]);
+        $pkt = $this->getLastPacket($this->packetLoop());
+        if ($pkt === false)
+            return -1;
         switch ($pkt['e'])
         {
             case 'ok':
