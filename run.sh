@@ -24,6 +24,12 @@ ask_restart()
 }
 
 echo "metBot Beta 7"
+# PHP for Windows Mingw users
+if [ -z "$(which php)" -a -f "/c/php/php" ]
+then
+  PATH=$PATH:/c/php
+fi
+
 php run.php "${@:1}"
 while :
 do
