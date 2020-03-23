@@ -270,12 +270,6 @@ if (!$bot->pk)
     $bot->quit = true;
 }
 
-if (isset($options['0']) || isset($options['auth-only']))
-{
-    $bot->Console->notice("Quitting after authentication!");
-    exit();
-}
-
 function handleLogin($bot, $login_error, $skip_retry=false, $retries=1)
 {
     if (_debug('SKIP_RETRY'))
@@ -339,7 +333,7 @@ function handleLogin($bot, $login_error, $skip_retry=false, $retries=1)
     return $login_error === 1;
 }
 
-function run($bot)
+function run($bot, $options)
 {
     if (!$bot->quit)
     {
@@ -378,8 +372,12 @@ function run($bot)
                     $bot->Console->notice("Successfully OAuth authenticated!");
             }
         }
-        if (_debug('QUIT_AFTER_OAUTH'))
-            die("Finished with OAuth.\n");
+
+        if (isset($options['0']) || isset($options['auth-only']))
+        {
+            $bot->Console->notice("Quitting after authentication!");
+            exit();
+        }
 
         $login_error = $bot->dAmn->login($bot->username, $bot->pk);
         $success = handleLogin($bot, $login_error);
@@ -453,5 +451,5 @@ function evalLoop($bot)
     }
 }
 
-run($bot);
+run($bot, $options);
 ?>
