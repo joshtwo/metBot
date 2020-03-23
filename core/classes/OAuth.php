@@ -41,20 +41,16 @@ class OAuth
     // sets up a server to wait for the authorization code
     function getCode($scope=null)
     {
-        //$s = socket_create(AF_INET, SOCK_STREAM, getprotobyname('tcp'));
+        // so fucking 1337 it's 1338
         $s = stream_socket_server('tcp://0.0.0.0:1338', $errno, $errstr);
         if (!$s)
         {
             echo "Error $errno: $errstr\n";
             return;
         }
-        //socket_bind($s, '0.0.0.0', 1338); // so fucking 1337 it's 1338
-        //socket_listen($s);
-        //$c = socket_accept($s); // first, do this for the redirect
+        // first, do this for the redirect
         $c = stream_socket_accept($s, -1);
         // we don't care about the response
-        $response = '';
-        //socket_recv($c, $response, 8192, 0);
         $response = fread($c, 8192);
         $response = '';
 
@@ -68,16 +64,14 @@ class OAuth
 
         // redirects to the auth url
         $reply = "HTTP/1.1 302 Found\r\nLocation: https://www.deviantart.com/oauth2/authorize?" . $this->getPayload($attrs) . "\r\n\r\n";
-        //socket_send($c, $reply, strlen($reply), 0);
         fwrite($c, $reply);
-        //socket_close($c);
         fclose($c);
 
         // now wait for the code to come back
         $response = '';
-        //$c = socket_accept($s); // first, do this for the redirect
+        // first, do this for the redirect
         $c = stream_socket_accept($s, -1);
-        //socket_recv($c, $response, 8192, 0); // lazy, but good enough
+        // lazy, but good enough
         $response = fread($c, 8192);
         echo $response;
 
@@ -95,11 +89,8 @@ class OAuth
             $body
         );
         $reply = join("\r\n", $reply);
-        //socket_send($c, $reply, strlen($reply), 0);
         fwrite($c, $reply);
-        //socket_close($c);
         fclose($c);
-        //socket_close($s);
         fclose($s);
 
         // extract the token
@@ -146,7 +137,8 @@ class OAuth
         $payload = $this->getPayload($attrs);
         if (!$post && $payload)
             $path .= "?$payload";
-        //echo "Path: $path\nPayload: $payload\n";
+        if (_debug('OAUTH_CALLS'))
+            echo "Path: $path\nPayload: $payload\n";
         $response = $this->bot->send_headers(
             $socket,
             "www.deviantart.com",
@@ -154,7 +146,8 @@ class OAuth
             null,
             $post ? $payload : null
         );
-        //echo "$response\n\n";
+        if (_debug('OAUTH_CALLS'))
+            echo "> $response\n\n";
         if (($pos = strpos($response, "\r\n\r\n")) !== false)
         {
             $body = substr($response, $pos + 4);
