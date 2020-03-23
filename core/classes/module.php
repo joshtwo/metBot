@@ -92,23 +92,32 @@ class module
     {
         is_dir("./data/module") || mkdir("./data/module");
         is_dir("./data/module/".get_class($this)) || mkdir("./data/module/".get_class($this));
-        //$contents = json_encode($data);
         $contents = serialize($data);
-        //if(!($f = fopen("./data/module/".get_class($this)."/$filename.json", "w"))) return false;
-        if(!($f = fopen("./data/module/".get_class($this)."/$filename.bot", "w"))) return false;
-        if(!fwrite($f, $contents)) return false;
+        if (!($f = fopen("./data/module/".get_class($this)."/$filename.bot", "w")))
+            return false;
+        if (fwrite($f, $contents) === false)
+        {
+            fclose($f);
+            return false;
+        }
         fclose($f);
         return true;
     }
 
-    final function load(&$var, $filename)
+    final function load(&$var, $filename, $default=null)
     {
-        //if (!file_exists("./data/module/".get_class($this)."/$filename.json"))
-            $var = @unserialize(@file_get_contents("./data/module/".get_class($this)."/$filename.bot"));
-        //else
-        //    $var = @json_decode(@file_get_contents("./data/module/".get_class($this)."/$filename.json"));
-        if (!$var) return false;
-        else return true;
+        $contents = @file_get_contents("./data/module/".get_class($this)."/$filename.bot");
+        if ($contents === false)
+        {
+            if (!is_null($default))
+                $var = $default;
+            return false;
+        }
+        else
+        {
+            $var = @unserialize($contents);
+            return true;
+        }
     }
 
     final function alias($cmd, $alias)
