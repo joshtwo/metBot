@@ -271,7 +271,8 @@ class dAmn
     function getLastPacket($pkt_list) {
         $pkt = end($pkt_list);
         if ($pkt === false) {
-            $pkt = end($this->packetLoop());
+            $pkt_list = $this->packetLoop();
+            $pkt = end($pkt_list);
             if ($pkt === false)
                 return false;
         }
